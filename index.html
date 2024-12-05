@@ -11,42 +11,44 @@
             font-weight: normal;
             font-style: normal;
         }
-
         body {
             font-family: 'MyCustomFont', Arial, sans-serif;
+	    margin: 0;
+	    padding: 0;
+	    height: 100vh;
+	    background: linear-gradient(135deg, #FFFACD, #FFFFFF);
+	    background-attachment: fixed; /* Фон остаётся неподвижным при прокрутке */
         }
-
         h1 {
             font-family: 'MyCustomFont', sans-serif;
             font-size: 2.5em;
             font-weight: bold;
         }
-
         p {
             font-family: 'MyCustomFont', sans-serif;
             font-size: 1.2em;
         }
 	.button {
-	    display: inline-block;
-	    padding: 10px 20px;
-	    font-family: Arial, sans-serif;
-	    font-size: 1em;
-	    font-weight: bold;
-	    text-align: center;
-	    color: white; /* Устанавливаем белый текст */
-	    text-decoration: none; /* Убираем подчеркивание */
-	    background: linear-gradient(90deg, #e43b04, #f07c22); /* Градиент */
-	    border: 2px solid #c23203;
-	    border-radius: 8px;
-	    box-shadow: 0 4px 0 #a32803, 0 4px 8px rgba(0, 0, 0, 0.3);
-	    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s; /* Добавили плавный переход для цвета текста */
-	    margin-top: 10px;
+    display: inline-block;
+    padding: 10px 20px;
+    font-family: 'MyCustomFont', Arial, sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(90deg, #e43b04, #f07c22);
+    border: 2px solid #c23203;
+    border-radius: 8px;
+    box-shadow: 0 4px 0 #a32803, 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+    margin-top: 0; /* Отступ сверху для кнопки */
 	}
 	.button:hover {
-	    background: linear-gradient(90deg, #f07c22, #e43b04); /* Обратный градиент */
-	    box-shadow: 0 2px 0 #a32803, 0 6px 10px rgba(0, 0, 0, 0.4);
-	    transform: translateY(-2px);
-	    color: white; /* Устанавливаем белый цвет текста даже при наведении */
+    background: linear-gradient(90deg, #f07c22, #e43b04);
+    box-shadow: 0 2px 0 #a32803, 0 6px 10px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    color: white;
 	}
 	.button:active {
 	    background: linear-gradient(90deg, #d33602, #e45c10);
@@ -83,12 +85,14 @@
             z-index: 1;
         }
         .header h1 {
-            position: relative;
-            z-index: 2;
-            color: white;
-            font-size: 2em;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 2;
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center; /* Центрирует текст */
+    margin: 0 auto; /* Выравнивает по центру */
+    width: 100%; /* Растягивает заголовок на всю ширину */
         }
         .gallery {
             display: grid;
@@ -99,23 +103,33 @@
             margin: 0 auto;
         }
         .item {
-            text-align: center;
-            background: #fff;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .item:hover {
-            transform: scale(1.05);
+    position: relative;
+    text-align: center;
+    background: linear-gradient(180deg, #ffede0, #ffcb91); /* Градиентный фон плашки */
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin: 0 auto;
+    height: auto; /* Автоматическая высота */
+    transition: transform 0.3s, box-shadow 0.3s;
         }
         .item img {
-            width: 100%;
-            height: auto;
-            max-height: 300px;
-            cursor: pointer;
-	    border-radius: 10px; /* Добавлено закругление */
-	    border: 2px solid #ccc; /* Легкая рамка */
+    display: block; /* Убираем лишние отступы */
+    margin: 0 auto; /* Центрирование по горизонтали */
+    width: calc(100% - 30px); /* Чуть меньше ширины контейнера для соблюдения рамок */
+    height: auto; /* Автоматическая высота с учетом пропорций */
+    aspect-ratio: 4 / 3; /* Соотношение сторон 4:3 */
+    object-fit: cover; /* Кроп изображения, чтобы вписать в рамку */
+    border-radius: 10px;
+    border: 2px solid #ccc; /* Рамка вокруг изображения */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Внутренняя тень */
+        }
+        .item:hover {
+    transform: scale(1.03);
+    background: linear-gradient(180deg, #ffb347, #ffcb91); /* Более светлый фон при наведении */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Увеличенная тень */
         }
         .modal {
             position: fixed;
@@ -131,13 +145,16 @@
             z-index: 9999;
         }
         .modal img {
-            max-width: 90%;
-            max-height: 80%;
+    max-width: 90%; /* Ограничивает ширину изображения */
+    max-height: 80%; /* Ограничивает высоту изображения */
+    object-fit: contain; /* Полностью вписывает изображение */
         }
         .item p {
-            margin: 10px 0 5px;
-            font-size: 1em;
-            color: #555;
+    font-size: 1.3em; /* Увеличиваем размер шрифта */
+    font-weight: bold; /* Делаем текст жирным */
+    color: white; /* Устанавливаем белый цвет */
+    margin: 10px 0; /* Добавляем отступы */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Легкая тень для читаемости */
         }
         a {
             display: inline-block;
@@ -184,36 +201,37 @@
 	.modal { /* Модальное окно всегда выше размытого слоя */
 	    z-index: 9999;
 	}
-	.item {
-	    position: relative; /* Обязательно: устанавливает контейнер как позиционируемый родитель */
-	    overflow: hidden; /* Убирает элементы за пределами блока */
-	}
 	.photo-info {
-	    position: absolute; /* Абсолютное позиционирование относительно .item */
-	    top: 5px; /* Отступ сверху */
-	    left: 5px; /* Отступ слева */
-	    background: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
-	    color: white; /* Белый текст */
-	    font-size: 0.8em; /* Размер текста */
-	    font-weight: bold; /* Жирный текст */
-	    border-radius: 5px; /* Закруглённые углы */
-	    padding: 3px 8px; /* Отступ внутри */
-	    z-index: 1; /* Поверх изображения */
- 	   display: flex; /* Расположение текста в строку */
- 	   gap: 5px; /* Расстояние между количеством фото и статусом */
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.8em;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px 10px;
+    z-index: 1;
+    display: flex;
+    gap: 8px;
 	}
 	.photo-count {
 	    font-size: 0.9em; /* Размер текста для количества */
 	}
-	.photo-status {
-	    font-size: 0.9em;
-	    color: #ffc107; /* Жёлтый текст для статуса */
-	}
+.photo-status.new {
+    font-size: 0.9em;
+    color: #ffc107; /* Желтый для "Новая" */
+}
+.photo-status.updated {
+    font-size: 0.9em;
+    color: #ff5733; /* Красный для "Обновлено" */
+}
 	.item {
 	    position: relative;
 	    background: linear-gradient(180deg, #ffede0, #ffcb91); /* Градиентный фон плашки */
 	    border-radius: 10px;
 	    padding: 10px;
+transition: transform 0.3s, box-shadow 0.3s;
 	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень */
 	    overflow: hidden; /* Скрыть элементы за пределами блока */
 	}
@@ -226,76 +244,152 @@
 	    padding: 2px;
 	}
 	.photo-info {
-	    position: absolute;
-	    top: 5px;
-	    left: 5px;
-	    background: rgba(0, 0, 0, 0.6);
-	    color: white;
-	    font-size: 0.9em;
-	    font-weight: bold;
-	    border-radius: 5px;
-	    padding: 3px 8px;
-	    z-index: 1;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.9em;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 3px 8px;
+    z-index: 1;
+    display: flex;
+    gap: 5px;
 	}
+.tags {
+    display: flex;
+    justify-content: center; /* Выравнивание по центру */
+    gap: 15px; /* Расстояние между тегами */
+    margin: 20px 0; /* Отступы сверху и снизу */
+    padding: 10px 0;
+}
+.tag {
+    font-family: 'MyCustomFont', Arial, sans-serif;
+    padding: 8px 15px;
+    font-size: 1em;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(90deg, #e43b04, #f07c22);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.tag:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #f07c22, #e43b04);
+}
+.category {
+    font-family: 'MyCustomFont', Arial, sans-serif; /* Используем тот же шрифт */
+    font-size: 0.9em;
+    color: #555; /* Цвет текста */
+    font-weight: bold;
+    margin-top: 5px;
+    display: inline-block;
+    text-transform: lowercase; /* Делаем текст в нижнем регистре */
+}
+.name-category {
+    display: flex;
+    justify-content: space-between; /* Распределяет элементы по краям */
+    align-items: center; /* Выравнивает по вертикали */
+    margin-top: 5px; /* Небольшой отступ сверху */
+    font-family: 'MyCustomFont', Arial, sans-serif; /* Шрифт для обоих элементов */
+}
+
+.name {
+    font-size: 1em;
+    font-weight: bold;
+    color: #555; /* Цвет для имени */
+}
+
+.category {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #555; /* Цвет для категории */
+    text-transform: lowercase; /* Делает текст строчным */
+}
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>«Уникальные» расстановки 17TX</h1>
+        <h1>«Уникальные» расстановки 17TX
+<div class="tags">
+    <button class="tag" data-filter="all">#Все</button>
+    <button class="tag" data-filter="война">#Война</button>
+    <button class="tag" data-filter="ресурсы">#Ресурсы</button>
+    <button class="tag" data-filter="декор">#Декор</button>
+        </h1>
+</div>
     </div>
     <div class="gallery">
-      <div class="item">
+      <div class="item" data-categories="война">
     	<div class="photo-info">
-        <span class="photo-count">1/3</span>
-        <span class="photo-status">Занято</span>
+        <span class="photo-count">#1</span>
+        <span class="photo-status updated">Обновлено</span>
         </div>
             <img src="1.png" alt="Расстановка 1" class="zoomable" data-id="1">
-            <p>Kvane</p>
+<div class="name-category">
+            <p class="name">Kvane</p>
+<span class="category">#война</span>
+</div>
             <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsohvSrKrgjtnvHVA5sNGr" target="_blank" class="button">Скопировать базу</a>
         </div>
-      <div class="item">
+      <div class="item" data-categories="война">
     	<div class="photo-info">
-        <span class="photo-count">1/3</span>
-        <span class="photo-status">Занято</span>
+        <span class="photo-count">#2</span>
         </div>
             <img src="2.png" alt="Расстановка 2" class="zoomable" data-id="2">
-            <p>ARTEM</p>
+<div class="name-category">
+            <p class="name">ARTEM</p>
+<span class="category">#война</span>
+</div>
             <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh0js0dXzROaZzLwW-Tx" target="_blank" class="button">Скопировать базу</a>
         </div>
-      <div class="item">
+      <div class="item" data-categories="война">
     	<div class="photo-info">
-        <span class="photo-count">1/3</span>
-        <span class="photo-status">Занято</span>
+        <span class="photo-count">#3</span>
         </div>
             <img src="3.png" alt="Расстановка 3" class="zoomable" data-id="3">
-            <p>Arsen</p>
+<div class="name-category">
+            <p class="name">Arsen</p>
+<span class="category">#война</span>
+</div>
             <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh2XckloYJy9Sf-VqS0A" target="_blank" class="button">Скопировать базу</a>
         </div>
-      <div class="item">
+      <div class="item" data-categories="война">
     	<div class="photo-info">
-        <span class="photo-count">1/3</span>
-        <span class="photo-status">Новая</span>
+        <span class="photo-count">#4</span>
+        <span class="photo-status new">Новая</span>
         </div>
             <img src="4.png"" alt="Расстановка 17ТХ" class="zoomable" data-id="4">
-            <p>?</p>
+<div class="name-category">
+            <p class="name">?</p>
+<span class="category">#война</span>
+</div>
             <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh6JkjiRe8LGva_Ox8DX" target="_blank" class="button">Скопировать базу</a>
         </div>
-      <div class="item">
+      <div class="item" data-categories="война">
     	<div class="photo-info">
-        <span class="photo-count">1/3</span>
-        <span class="photo-status">Новая</span>
+        <span class="photo-count">#5</span>
+        <span class="photo-status new">Новая</span>
         </div>
             <img src="5.png"" alt="Расстановка 17ТХ" class="zoomable" data-id="5">
-            <p>?</p>
+<div class="name-category">
+            <p class="name">?</p>
+<span class="category">#война</span>
+</div>
             <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh8KWqpJx8Ot_5SW6SYS" target="_blank" class="button">Скопировать базу</a>
         </div>
-      <div class="item">
+      <div class="item" data-categories="война">
     	<div class="photo-info">
-        <span class="photo-count">1/3</span>
-        <span class="photo-status">Занято</span>
+        <span class="photo-count">#6</span>
         </div>
             <img src="6.png"" alt="Расстановка 17ТХ" class="zoomable" data-id="6">
-            <p>Thug</p>
+<div class="name-category">
+            <p class="name">Thug</p>
+<span class="category">#война</span>
+</div>
             <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh-zOQyj1KbyMO0stXFE" target="_blank" class="button">Скопировать базу</a>
     </div>
     </div>
@@ -312,12 +406,12 @@
         const zoomableImages = document.querySelectorAll('.zoomable');
 
         const thumbnailData = {
-            "1": ["1.png", "11.png", "111.png"],
-            "2": ["2.png", "22.png", "222.png"],
-            "3": ["3.png", "33.png", "333.png"],
-            "4": ["4.png", "44.png", "444.png"],
-            "5": ["5.png", "55.png", "555.png"],
-            "6": ["6.png", "66.png", "666.png"]
+            "1": ["1.png", "1a.png", "1b.png"],
+            "2": ["2.png", "2a.png", "2b.png"],
+            "3": ["3.png", "3a.png", "3b.png"],
+            "4": ["4.png", "4a.png", "4b.png"],
+            "5": ["5.png", "5a.png", "5b.png"],
+            "6": ["6.png", "6a.png", "6b.png"]
         };
 
         zoomableImages.forEach(img => {
@@ -355,6 +449,24 @@
  	       document.body.classList.remove('modal-open');
             }
         });
+const tags = document.querySelectorAll('.tag');
+const items = document.querySelectorAll('.item');
+
+tags.forEach(tag => {
+    tag.addEventListener('click', () => {
+        const filter = tag.dataset.filter;
+        
+        items.forEach(item => {
+            const categories = item.dataset.categories.split(',');
+            
+            if (filter === 'all' || categories.includes(filter)) {
+                item.style.display = 'block'; // Показать элемент
+            } else {
+                item.style.display = 'none'; // Скрыть элемент
+            }
+        });
+    });
+});
     </script>
 </body>
 </html>
