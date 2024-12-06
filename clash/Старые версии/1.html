@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея расстановок</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 2em;
+            color: #333;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, auto); /* Три изображения в ряд */
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .item {
+            text-align: center;
+            background: #fff;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .item img {
+   	    width: 400px; /* Фиксированная ширина */
+   	    height: 300px; /* Фиксированная высота */
+   	    object-fit: cover; /* Обрезка изображения по контейнеру */
+   	    border-radius: 4px;
+	}
+
+        }
+        .item p {
+            margin: 10px 0 5px;
+            font-size: 1em;
+            color: #555;
+        }
+        a {
+            display: inline-block;
+            margin-top: 5px;
+            text-decoration: none;
+            color: #007BFF;
+            font-size: 0.9em;
+        }
+        a:hover {
+            color: #0056b3;
+        .modal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        .modal-content {
+            display: block;
+            margin: auto;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-content:hover {
+            cursor: zoom-in; /* Увеличение при наведении */
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+        }
+	.zoomable {
+ 	   transition: transform 0.3s ease; /* Плавный переход при увеличении */
+  	  cursor: pointer;
+  	  border-radius: 4px;
+	}
+	/* Увеличение изображения */
+	.zoomable.zoomed {
+  	  transform: scale(2); /* Увеличение в 2 раза */
+  	  z-index: 10; /* Чтобы картинка отображалась поверх всего */
+  	  position: relative;
+	}
+    </style>
+</head>
+<body>
+    <h1>"Уникальные" расстановки 17TX</h1>
+    <div class="gallery">
+        <div class="item">
+            <img src="1.png"" alt="Описание 1" class="zoomable">
+            <p>Kvane</p>
+            <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsohvSrKrgjtnvHVA5sNGr" target="_blank">Скопировать базу</a>
+        </div>
+        <div class="item">
+            <img src="2.png"" alt="Описание 2" class="zoomable">
+            <p>ARTEM</p>
+            <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh0js0dXzROaZzLwW-Tx" target="_blank">Скопировать базу</a>
+        </div>
+        <div class="item">
+            <img src="3.png"" alt="Описание 3" class="zoomable">
+            <p>Arsen</p>
+            <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh2XckloYJy9Sf-VqS0A" target="_blank">Скопировать базу</a>
+        </div>
+	<div class="item">
+            <img src="4.png"" alt="Описание 1" class="zoomable">
+            <p>Описание расстановки 1</p>
+            <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh6JkjiRe8LGva_Ox8DX" target="_blank">Скопировать базу</a>
+        </div>
+ 	<div class="item">
+            <img src="5.png"" alt="Описание 1" class="zoomable">
+            <p>Описание расстановки 1</p>
+            <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh8KWqpJx8Ot_5SW6SYS" target="_blank">Скопировать базу</a>
+        </div>
+	<div class="item">
+            <img src="6.png"" alt="Описание 1" class="zoomable">
+            <p>Описание расстановки 1</p>
+            <a href="https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh-zOQyj1KbyMO0stXFE" target="_blank">Скопировать базу</a>
+        </div>
+		<div id="imageModal" class="modal">
+    			<span class="close">&times;</span>
+    			<img class="modal-content" id="modalImage">
+		</div>
+    </div>
+	<script>
+    // Выбираем все элементы с классом .zoomable
+    const zoomableImages = document.querySelectorAll(".zoomable");
+
+    // Добавляем обработчик клика для каждого изображения
+    zoomableImages.forEach(img => {
+        img.addEventListener("click", () => {
+            // Если изображение уже увеличено, убираем увеличение
+            if (img.classList.contains("zoomed")) {
+                img.classList.remove("zoomed");
+            } else {
+                // Убираем "увеличение" со всех изображений
+                zoomableImages.forEach(i => i.classList.remove("zoomed"));
+                // Увеличиваем выбранное изображение
+                img.classList.add("zoomed");
+            }
+        });
+    });
+</script>
+</body>
+</html>

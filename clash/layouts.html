@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расстановки</title>
+<link rel="stylesheet" href="styles.css">
+    <style>
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1>Расстановки для 17 TX</h1>
+</header>
+<div class="tags">
+    <button class="tag" data-filter="all">#Все</button>
+    <button class="tag" data-filter="война">#Война</button>
+    <button class="tag" data-filter="ресурсы">#Ресурсы</button>
+    <button class="tag" data-filter="декор">#Декор</button>
+</div>
+<div class="gallery" id="gallery"></div>
+    <div class="modal" id="modal">
+        <img id="modalImage" src="" alt="Увеличенное изображение">
+        <div class="thumbnails" id="thumbnailsContainer"></div>
+    </div>
+<script src="js/render-layouts.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/scroll-header.js"></script>
+</body>
+</html>
