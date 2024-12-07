@@ -11,7 +11,8 @@
     "name": "ARTEM",
     "category": "война",
     "image": "images/2a.webp",
-    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIs6K28GJZghfhmq86d8aDx"
+    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIs6K28GJZghfhmq86d8aDx",
+    "status": "updated"
   },
   {
     "id": 3,
@@ -25,14 +26,16 @@
     "name": "?",
     "category": "война",
     "image": "images/4a.webp",
-    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh6JkjiRe8LGva_Ox8DX"
+    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh6JkjiRe8LGva_Ox8DX",
+    "status": "new"
   },
   {
     "id": 5,
     "name": "?",
     "category": "война",
     "image": "images/5a.webp",
-    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh8KWqpJx8Ot_5SW6SYS"
+    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIsoh8KWqpJx8Ot_5SW6SYS",
+    "status": "new"
   },
   {
     "id": 6,
