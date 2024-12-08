@@ -4,5 +4,17 @@
   "3": ["images/3a.webp", "images/3b.webp", "images/3c.webp"],
   "4": ["images/4a.webp", "images/4b.webp", "images/4c.webp"],
   "5": ["images/5a.webp", "images/5b.webp", "images/5c.webp"],
-  "6": ["images/6a.webp", "images/6b.webp", "images/6c.webp"]
+  "6": ["images/6a.webp", "images/6b.webp", "images/6c.webp"],
+  "7": ["images/7a.webp", "images/7b.webp", "images/7c.webp"],
+  "8": ["images/8a.webp", "images/8b.webp", "images/8c.webp"],
+  "9": ["images/9a.webp", "images/9b.webp"],
+  "10": ["images/10a.webp", "images/10b.webp"],
+  "11": ["images/11a.webp", "images/11b.webp"],
+  "12": ["images/12a.webp", "images/12b.webp"],
+  "13": ["images/13a.webp", "images/13b.webp"],
+  "14": ["images/14a.webp", "images/14b.webp"],
+  "15": ["images/15a.webp", "images/15b.webp"],
+  "16": ["images/16a.webp", "images/16b.webp"],
+  "17": ["images/17a.webp", "images/17b.webp", "images/17c.webp"],
+  "18": ["images/18a.webp", "images/18b.webp", "images/18c.webp"]
 }
