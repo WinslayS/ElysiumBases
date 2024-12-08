@@ -1,14 +1,14 @@
-const tags = document.querySelectorAll('.tag');
-const items = document.querySelectorAll('.item');
-tags.forEach(tag => {
+document.querySelectorAll('.tag').forEach(tag => {
     tag.addEventListener('click', () => {
-        const filter = tag.dataset.filter;
+        const category = tag.getAttribute('data-filter'); // Получаем значение категории
+        const items = document.querySelectorAll('.item');
+
+        // Показываем или скрываем элементы в зависимости от категории
         items.forEach(item => {
-            const categories = item.dataset.categories.split(',');
-            if (filter === 'all' || categories.includes(filter)) {
-                item.style.display = 'block'; // Показать элемент
+            if (category === 'all' || item.getAttribute('data-categories') === category) {
+                item.style.display = 'block'; // Показываем элемент
             } else {
-                item.style.display = 'none'; // Скрыть элемент
+                item.style.display = 'none'; // Скрываем элемент
             }
         });
     });
