@@ -1,0 +1,68 @@
+/* Общий стиль для таблицы */
+#table-output table {
+    border-collapse: collapse;
+    width: 100%; /* Таблица занимает всю ширину */
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+    background-color: #fff; /* Белый фон для контраста */
+    border-radius: 8px; /* Закруглённые углы */
+    overflow: hidden; /* Убираем выступающие элементы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+    position: relative;
+}
+
+/* Заголовки таблицы */
+#table-output th {
+    background-color: #f4f4f4; /* Светло-серый фон для заголовков */
+    color: --dark-gray;
+    position: sticky; /* Заголовки остаются на месте */
+    top: 0;
+    z-index: 2;
+    text-align: center;
+    padding: 12px 8px;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd; /* Чёткая линия под заголовками */
+}
+
+/* Ячейки таблицы */
+#table-output td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Разделительные линии */
+    text-align: center; /* Центрируем текст */
+}
+
+/* Зебра-полосы */
+#table-output tr:nth-child(even) {
+    background-color: #f9f9f9; /* Светлый фон для чётных строк */
+}
+
+/* Эффект наведения на строку */
+#table-output tr:hover {
+    background-color: #f1f1f1; /* Подсветка строки при наведении */
+    cursor: pointer; /* Указатель при наведении */
+}
+
+/* Прокрутка для больших таблиц */
+#table-output {
+    overflow-x: auto;
+}
+#table-output tr.selected {
+    background-color: #d7e3fc !important; /* Голубой фон для выделенной строки */
+    color: --dark-gray; /* Тёмный текст */
+}
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    #table-output table {
+        font-size: 14px; /* Уменьшаем шрифт на мобильных */
+    }
+}
+#searchBox {
+    margin: 10px 0;
+    padding: 8px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}

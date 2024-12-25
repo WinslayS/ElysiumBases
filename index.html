@@ -5,14 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/head.webp" type="image/webp">
     <title>Главное меню</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/header.css">
 </head>
 <body>
-    <div class="main-menu">
-        <h1>Элис</h1>
-        <button class="menu-button" onclick="location.href='layouts.html'">Расстановки</button>
-        <button class="menu-button" onclick="alert('Страница миксов в разработке!')">Миксы</button>
-        <button class="menu-button" onclick="alert('Страница советов в разработке!')">Советы</button>
-    </div>
+    <header class="header-top">
+            <h1><a href="index.html" style="text-decoration: none; color: inherit;">Элизиум</a></h1>
+    </header>
+    <section class="main-menu">
+        <div class="menu-card" onclick="location.href='layouts.html'">
+            <img src="images/layouts.webp" alt="Расстановки">
+            <h2>Расстановки</h2>
+        </div>
+        <div class="menu-card" onclick="location.href='mix.html'">
+            <img src="images/mix.webp" alt="Миксы">
+            <h2>Миксы</h2>
+        </div>
+        <div class="menu-card" onclick="location.href='advice.html'">
+            <img src="images/advice.webp" alt="Советы">
+            <h2>Советы</h2>
+        </div>
+        <div class="menu-card" onclick="location.href='table.html'">
+            <img src="images/table.webp" alt="ЛВК">
+            <h2>ЛВК</h2>
+        </div>
+    </section>
 </body>
 </html>

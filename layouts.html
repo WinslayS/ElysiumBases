@@ -5,27 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/head.webp" type="image/webp">
     <title>Расстановки</title>
-<link rel="stylesheet" href="styles.css">
-    <style>
-    </style>
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/gallery.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/modal.css">
 </head>
 <body>
-<header class="header">
-    <h1>Расстановки для 17 TX</h1>
-</header>
-<div class="tags">
-    <button class="tag" data-filter="all">#Все</button>
-    <button class="tag" data-filter="война">#Война</button>
-    <button class="tag" data-filter="ресурсы">#Ресурсы</button>
-    <button class="tag" data-filter="декор">#Декор</button>
-</div>
-<div class="gallery" id="gallery">
-</div>
+    <header class="header-top">
+        <h1><a href="index.html" style="text-decoration: none; color: inherit;">Элизиум</a></h1>
+    </header>
+    <header class="header-nav">
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="layouts.html" class="active">Расстановки</a></li>
+                <li><a href="mix.html">Миксы</a></li>
+                <li><a href="advice.html">Советы</a></li>
+                <li><a href="table.html">ЛВК</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main-container">
+        <div class="filter-section">
+            <button id="filterPanelToggle" class="filter-toggle-button">Фильтры</button>
+            <div class="filter-panel">
+                <div class="filter-categories">
+                    <button class="filter-category" data-category="war">#Война</button>
+                    <button class="filter-category" data-category="resources">#Ресурсы</button>
+                    <button class="filter-category" data-category="decor">#Декор</button>
+                </div>
+                <div class="filter-statuses">
+                    <button class="filter-status" data-status="new">Новая</button>
+                    <button class="filter-status" data-status="updated">Обновлено</button>
+                </div>
+            </div>
+        </div>
+        <div class="gallery" id="gallery"></div>
+    </div>
 <div class="modal" id="modal">
-    <img id="modalImage" src="" alt="Увеличенное изображение">
-    <div class="thumbnails" id="thumbnailsContainer"></div>
+    <div class="modal-content">
+        <div class="modal-controls">
+            <div class="zoom-controls">
+                <button id="resetZoom" class="control-button"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
+                    <line x1="16" y1="16" x2="21" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+                <div id="zoomSliderContainer">
+                    <input id="zoomSlider" type="range" min="1" max="3" step="0.1" value="1" />
+                </div>
+            </div>
+            <button id="closeModal" class="control-button">
+                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="6" y1="6" x2="18" y2="18" stroke="white" stroke-width="2"/>
+                    <line x1="6" y1="18" x2="18" y2="6" stroke="white" stroke-width="2"/>
+                </svg>
+            </button>
+        </div>
+        <div class="preview-area">
+            <img id="modalImage" src="" alt="">
+        </div>
+        <div class="controls-area">
+            <div class="thumbnails" id="thumbnailsContainer">
+            </div>
+        </div>
+    </div>
 </div>
-</div>
+<footer class="footer-bottom">
+    <div class="footer-content">
+        <p>Создатель: <strong>Kvane</strong></p>
+        <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
+        <p>ТГ: <span id="tgHandle" class="clickable">@winslays</span></p>
+    </div>
+</footer>
 <script src="js/render-layouts.js"></script>
 <script src="js/scroll-header.js"></script>
 <script src="js/filters.js"></script>

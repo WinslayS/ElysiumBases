@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/head.webp" type="image/webp">
+    <title>ЛВК</title>
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/table.css">
+    <link rel="stylesheet" href="style/header.css">
+</head>
+<body>
+    <header class="header-top">
+        <h1><a href="index.html" style="text-decoration: none; color: inherit;">Элизиум</a></h1>
+    </header>
+    <header class="header-nav">
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="layouts.html">Расстановки</a></li>
+                <li><a href="mix.html">Миксы</a></li>
+                <li><a href="advice.html">Советы</a></li>
+                <li><a href="table.html" class="active">ЛВК</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="excel-container">
+        <h2>Таблица CWL</h2>
+        <div>
+            <input type="text" id="searchBox" placeholder="Поиск..." />
+        </div>
+        <div id="table-output"></div>
+    </div>
+    <footer class="footer-bottom">
+        <div class="footer-content">
+            <p>Создатель: <strong>Kvane</strong></p>
+            <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
+            <p>ТГ: <span id="tgHandle" class="clickable">@winslays</span></p>
+        </div>
+    </footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/table.js" defer></script>
+</body>
+</html>
