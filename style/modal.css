@@ -1,0 +1,194 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8); /* Затемнение фона */
+    z-index: 5000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+.modal img {
+    max-width: 100%; /* Ограничение ширины */
+    max-height: 70vh; /* Ограничение высоты для больших экранов */
+    object-fit: contain; /* Сохранение пропорций */
+    border-radius: 10px; /* Закругленные углы */
+    transition: transform 0.3s ease-in-out; /* Анимация масштабирования */
+}
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    height: auto; /* Автоматическая высота */
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Интерфейс сверху, а миниатюры внизу */
+    padding: 0;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    box-shadow: none; /* Убираем тень */
+    border-radius: 12px;
+    transition: transform 0.3s ease; /* Плавное изменение масштаба */
+    will-change: transform; /* Оптимизация для производительности */
+}
+.preview-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Скрываем изображение за границами */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px; /* Закругляем углы */
+    background: transparent; /* Убираем фон */
+    pointer-events: auto; /* Включаем интерактивность */
+}
+.controls-area {
+    position: absolute; /* Фиксируем под рамкой */
+    bottom: -90px; /* Опускаем ниже рамки */
+    left: 50%; /* Центрируем */
+    transform: translateX(-50%); /* Выравниваем по центру */
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Добавляем расстояние между элементами */
+    width: 100%; /* Растягиваем на всю ширину */
+    z-index: 1000; /* Поверх фона */
+}
+.preview-area img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Сохраняем пропорции и ограничиваем размер */
+    position: relative;
+    z-index: 1; /* Убедитесь, что изображение перекрывает только нужные области */
+    transition: transform 0.3s ease; /* Плавная анимация изменения масштаба */
+    transform-origin: center; /* Масштабирование относительно центра */
+}
+/* Адаптация для небольших экранов */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%; /* Увеличиваем ширину для мобильных устройств */
+        max-width: none; /* Убираем ограничение на ширину */
+        border-radius: 10px; /* Меньший радиус закругления */
+    }
+}
+/* Адаптация для очень маленьких экранов */
+@media (max-width: 480px) {
+    .modal-content {
+        width: 100%; /* Заполняем всю ширину экрана */
+        margin: 10px; /* Уменьшаем отступы */
+        border-radius: 8px; /* Ещё меньший радиус закругления */
+    }
+}
+.modal img:active {
+    cursor: grabbing;
+}
+.modal-controls {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 6000;
+    width: 100%;
+    justify-content: space-between;
+}
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 7001
+}
+.control-button {
+    background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    border: none;
+    padding: 2px 8px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.control-button:hover {
+    background: rgba(0, 0, 0, 0.8); /* Более яркий фон при наведении */
+    transform: scale(1.1); /* Легкое увеличение */
+}
+.control-button:active {
+    transform: scale(1.05); /* Уменьшение эффекта при нажатии */
+}
+#zoomSlider {
+    position: relative;
+    z-index: 7000;
+    width: 100%; /* Ползунок растягивается на всю ширину контейнера */
+    height: 10px; /* Высота трека */
+    appearance: none;
+    background: rgba(255, 255, 255, 0.2); /* Полупрозрачный трек */
+    border-radius: 4px; /* Закругленные углы */
+    cursor: pointer; /* Указатель для интерактивности */
+    overflow: hidden; /* Скрываем содержимое за границами */
+    outline: none; /* Убираем стандартные границы */
+}
+#zoomSliderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5); /* Совпадает с кнопкой */
+    border-radius: 6px; /* Закруглённые углы */
+    padding: 2px 8px; /* Отступы вокруг ползунка */
+    height: 28px; /* Высота, как у кнопки */
+    width: 150px; /* Ширина прямоугольника */
+}
+#zoomSlider:hover {
+    background: rgba(255, 255, 255, 0.4); /* Более заметный трек при наведении */
+}
+#zoomSlider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--slider-fill, 0%); /* Ширина заполненной части */
+    background: rgba(255, 255, 255, 0.6); /* Цвет заполненной части */
+    border-radius: 4px; /* Закругляем углы заполнения */
+}
+#zoomSlider::-webkit-slider-thumb {
+    appearance: none;
+    width: 0; /* Убираем точку */
+    height: 0;
+}
+#zoomSlider::-moz-range-thumb {
+    appearance: none;
+    width: 0; /* Убираем точку */
+    height: 0;
+}
+body.modal-open { /* Добавьте этот стиль для фона при открытии модального окна */
+	overflow: hidden; /* Отключает прокрутку страницы */
+	position: relative;
+}
+body.modal-open::before {
+ 	content: "";
+ 	position: fixed;
+	top: 0;
+	left: 0;
+ 	width: 100%;
+ 	height: 100%;
+ 	background: rgba(0, 0, 0, 0.4); /* Полупрозрачный слой */
+ 	backdrop-filter: blur(8px); /* Размытие заднего фона */
+ 	z-index: 998; /* Убедитесь, что фон ниже модального окна */
+}
+.modal-open .gallery {
+    filter: blur(4px); /* Размытие и затемнение */
+    transition: filter 0.3s ease-in-out; /* Плавный переход */
+}
+.modal-open {
+    overflow: hidden;
+    touch-action: none; /* Блокирует взаимодействие */
+}
