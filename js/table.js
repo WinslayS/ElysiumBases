@@ -1,53 +1,144 @@
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM загружен, начинается загрузка таблицы...');
-    const table = document.querySelector('#table-output table');
-
-    if (table) {
-        table.addEventListener('click', (event) => {
-            const rows = table.querySelectorAll('tr');
-            rows.forEach(row => row.classList.remove('selected')); // Убираем выделение со всех строк
-
-            const clickedRow = event.target.closest('tr');
-            if (clickedRow) {
-                clickedRow.classList.add('selected'); // Выделяем кликнутую строку
-            }
-        });
+// Наш список таблиц
+const sheetsList = [
+    {
+      name: "Декабрь 24г",
+      url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoyc-sQMkzWIH68hidY4ka8MdbcZ_o7TJ48Y2d20t2xItnJUckZFnSdgtuaA8jsSA2hxRc2Ub5Im60/pub?output=tsv"
+    },
+    {
+      name: "Январь 25г",
+      url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFZD_jrEWb7rU6lkYT-IzdFDyn9i5gQK7h7uiC9IHm1e5e7yBUrSo5mybBNvsTbZAocG_5SAEqMncl/pub?output=tsv"
     }
-});
-
-    fetch('data/cwl12-24.xlsx')
-        .then(response => {
-            if (!response.ok) throw new Error(`Ошибка загрузки файла: ${response.statusText}`);
-            console.log('Файл CWL.xlsx успешно загружен.');
-            return response.arrayBuffer();
-        })
-        .then(data => {
-            const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-
-            console.log('Таблица успешно прочитана, начинается преобразование...');
-            const html = XLSX.utils.sheet_to_html(worksheet);
-            document.getElementById('table-output').innerHTML = html;
-            console.log('Таблица отображена на странице.');
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            document.getElementById('table-output').innerText = 'Не удалось загрузить таблицу.';
+  ];
+  
+  // Если вы хотите, чтобы самый новый был вверху, оставьте .reverse():
+  sheetsList.reverse();
+  
+  // Отключаем всплывающие ошибки DataTables:
+  $.fn.dataTable.ext.errMode = 'none';
+  
+  // Ссылка на текущий экземпляр DataTable (для destroy)
+  let dataTable = null;
+  
+  /**
+   * Простой парсер TSV (tab-separated values).
+   * Если CSV через ";", меняйте '\t' => ';'.
+   */
+  function parseTSV(tsv) {
+    const lines = tsv.trim().split('\n');
+    return lines.map(line => line.split('\t'));
+  }
+  
+  /**
+   * Загружаем таблицу с сбросом кэша, строим Thead/Tbody, инициализируем DataTables.
+   */
+  async function loadTable(url) {
+    try {
+      // Добавляем случайный параметр к ссылке, чтобы точно избежать кэширования
+      const noCacheUrl = url + '&t=' + Date.now();
+  
+      const response = await fetch(noCacheUrl, { cache: 'no-store' });
+      const textData = await response.text();
+  
+      const parsed = parseTSV(textData);
+      if (!parsed || parsed.length === 0) {
+        console.warn("Данные пустые или не корректны");
+        return;
+      }
+  
+      const headers = parsed[0];
+      const rows = parsed.slice(1);
+  
+      const thead = document.querySelector('#myDataTable thead');
+      const tbody = document.querySelector('#myDataTable tbody');
+  
+      // Очищаем старые данные
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+  
+      // Создаём заголовок
+      const headerRow = document.createElement('tr');
+      headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+  
+      // Создаём строки
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        r.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
         });
-
-// Функция для отображения Excel контейнера
-function showExcelTable() {
-    document.getElementById('excel-container').style.display = 'block';
-}
-document.getElementById('searchBox').addEventListener('input', function () {
-    const searchText = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#table-output table tr');
-
-    rows.forEach((row, index) => {
-        if (index === 0) return; // Пропускаем заголовок
-        const cells = row.querySelectorAll('td');
-        const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-        row.style.display = rowText.includes(searchText) ? '' : 'none';
+        tbody.appendChild(tr);
+      });
+  
+      // Уничтожаем предыдущую DataTable, если есть
+      if (dataTable) {
+        dataTable.destroy();
+        dataTable = null;
+      }
+  
+      // Показываем .datatable-wrapper (была скрыта)
+      document.querySelector('.datatable-wrapper').style.display = 'block';
+  
+      // Инициализируем DataTables
+      dataTable = $('#myDataTable').DataTable({
+        paging: false,
+        info: false,
+        lengthChange: false,
+        ordering: false,
+        // Поиск включён:
+        searching: true,
+        // Но ограничиваем его только на первый столбец
+        columnDefs: [
+          { searchable: true,  targets: 0 }, // только 0-й (первый) столбец
+          { searchable: false, targets: "_all" }
+        ],
+        // Расположение элементов: 'f' - поиск, 't' - сама таблица, 'r' - обработка
+        dom: 'ftr',
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/ru.json'
+        }
+      });
+  
+    } catch (err) {
+      console.error('Ошибка при загрузке таблицы:', err);
+    }
+  }
+  
+  /**
+   * При загрузке страницы делаем кнопки-плашки в столбик.
+   * Не загружаем ничего автоматически — пользователь сам выбирает.
+   */
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabsContainer = document.getElementById('tabsContainer');
+  
+    sheetsList.forEach(item => {
+      const btn = document.createElement('button');
+      btn.textContent = item.name;
+  
+      // При нажатии:
+      btn.addEventListener('click', () => {
+        // Снимаем класс active-tab со всех
+        tabsContainer.querySelectorAll('button').forEach(b => {
+          b.classList.remove('active-tab');
+        });
+        // Текущей кнопке присваиваем
+        btn.classList.add('active-tab');
+  
+        // Грузим таблицу
+        loadTable(item.url);
+      });
+  
+      tabsContainer.appendChild(btn);
     });
-});
+  
+    // Если хотите сразу загружать первую:
+    // if (sheetsList.length > 0) {
+    //   tabsContainer.querySelector('button').click();
+    // }
+  });
+  

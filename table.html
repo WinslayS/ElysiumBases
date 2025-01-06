@@ -1,43 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="images/head.webp" type="image/webp">
-    <title>ЛВК</title>
-    <link rel="stylesheet" href="style/base.css">
-    <link rel="stylesheet" href="style/table.css">
-    <link rel="stylesheet" href="style/header.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>ЛВК</title>
+  <link rel="icon" href="images/head.webp" type="image/webp" />
+
+  <!-- Ваши базовые стили -->
+  <link rel="stylesheet" href="style/base.css" />
+  <link rel="stylesheet" href="style/header.css" />
+  <link rel="stylesheet" href="style/table.css" />
+
+  <!-- DataTables CSS -->
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css"
+  />
 </head>
 <body>
-    <header class="header-top">
-        <h1><a href="index.html" style="text-decoration: none; color: inherit;">Элизиум</a></h1>
-    </header>
-    <header class="header-nav">
-        <nav class="nav-menu">
-            <ul>
-                <li><a href="layouts.html">Расстановки</a></li>
-                <li><a href="mix.html">Миксы</a></li>
-                <li><a href="advice.html">Советы</a></li>
-                <li><a href="table.html" class="active">ЛВК</a></li>
-            </ul>
-        </nav>
-    </header>
-    <div id="excel-container">
-        <h2>Таблица CWL</h2>
-        <div>
-            <input type="text" id="searchBox" placeholder="Поиск..." />
-        </div>
-        <div id="table-output"></div>
+  <header class="header-top">
+    <h1>
+      <a href="index.html" style="text-decoration: none; color: inherit;">Элизиум</a>
+    </h1>
+  </header>
+  <header class="header-nav">
+    <nav class="nav-menu">
+      <ul>
+        <li><a href="layouts.html">Расстановки</a></li>
+        <li><a href="mix.html">Миксы</a></li>
+        <li><a href="advice.html">Советы</a></li>
+        <li><a href="table.html" class="active">ЛВК</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Блок с кнопками (плашками) в столбик -->
+  <div class="tabs-container" id="tabsContainer">
+    <!-- Тут динамически появятся наши кнопки -->
+  </div>
+
+  <!-- Обёртка для таблицы (скрыта по умолчанию, 
+       чтобы не было пустого места до первой загрузки) -->
+  <div class="datatable-wrapper" style="display: none;">
+    <table id="myDataTable" class="display">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer class="footer-bottom">
+    <div class="footer-content">
+      <p>Создатель: <strong>Kvane</strong></p>
+      <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
+      <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
     </div>
-    <footer class="footer-bottom">
-        <div class="footer-content">
-            <p>Создатель: <strong>Kvane</strong></p>
-            <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
-            <p>ТГ: <span id="tgHandle" class="clickable">@winslays</span></p>
-        </div>
-    </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="js/table.js" defer></script>
+  </footer>
+
+  <!-- Скрипты -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script
+    type="text/javascript"
+    src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js">
+  </script>
+  <script src="js/table.js"></script>
 </body>
 </html>
