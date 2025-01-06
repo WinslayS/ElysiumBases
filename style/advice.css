@@ -1,0 +1,31 @@
+.advice-section {
+    font-family: var(--main-font);
+    font-size: 12px;
+    line-height: 1.6; /* Увеличиваем расстояние между строками */
+    color: #333;
+    padding: 20px;
+    background-color: #fff8f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+.advice-section p {
+    margin-bottom: 15px; /* Отступы между параграфами */
+}
+
+.advice-section ul {
+    margin-left: 20px; /* Отступ для списка */
+    margin-bottom: 15px;
+    padding-left: 20px;
+    list-style-type: disc; /* Маркеры для списка */
+}
+
+.advice-section li {
+    margin-bottom: 10px; /* Отступ между элементами списка */
+}
+
+.advice-section strong {
+    color: #ff7043; /* Выделение важных элементов */
+}

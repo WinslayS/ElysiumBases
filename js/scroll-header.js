@@ -41,10 +41,3 @@ window.addEventListener('scroll', () => {
     // Обновляем последнюю позицию прокрутки
     lastScrollPosition = currentScroll;
 });
-document.getElementById('tgHandle').addEventListener('click', function() {
-    const textToCopy = this.innerText;
-    navigator.clipboard.writeText(textToCopy).then(() => {
-    }).catch(err => {
-        console.error('Ошибка копирования: ', err);
-    });
-});

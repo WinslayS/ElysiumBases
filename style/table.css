@@ -1,68 +1,159 @@
-/* Общий стиль для таблицы */
-#table-output table {
-    border-collapse: collapse;
-    width: 100%; /* Таблица занимает всю ширину */
-    margin: 20px 0;
-    font-size: 16px;
-    text-align: left;
-    background-color: #fff; /* Белый фон для контраста */
-    border-radius: 8px; /* Закруглённые углы */
-    overflow: hidden; /* Убираем выступающие элементы */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
-    position: relative;
-}
-
-/* Заголовки таблицы */
-#table-output th {
-    background-color: #f4f4f4; /* Светло-серый фон для заголовков */
-    color: --dark-gray;
-    position: sticky; /* Заголовки остаются на месте */
-    top: 0;
-    z-index: 2;
-    text-align: center;
-    padding: 12px 8px;
-    font-weight: bold;
-    border-bottom: 2px solid #ddd; /* Чёткая линия под заголовками */
-}
-
-/* Ячейки таблицы */
-#table-output td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd; /* Разделительные линии */
-    text-align: center; /* Центрируем текст */
-}
-
-/* Зебра-полосы */
-#table-output tr:nth-child(even) {
-    background-color: #f9f9f9; /* Светлый фон для чётных строк */
-}
-
-/* Эффект наведения на строку */
-#table-output tr:hover {
-    background-color: #f1f1f1; /* Подсветка строки при наведении */
-    cursor: pointer; /* Указатель при наведении */
-}
-
-/* Прокрутка для больших таблиц */
-#table-output {
-    overflow-x: auto;
-}
-#table-output tr.selected {
-    background-color: #d7e3fc !important; /* Голубой фон для выделенной строки */
-    color: --dark-gray; /* Тёмный текст */
-}
-/* Адаптация для мобильных устройств */
-@media (max-width: 768px) {
-    #table-output table {
-        font-size: 14px; /* Уменьшаем шрифт на мобильных */
-    }
-}
-#searchBox {
-    margin: 10px 0;
-    padding: 8px;
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #ddd;
+  /* Фон страницы #ffecb3, шрифт везде — var(--main-font) */
+  body {
+    background-color: #ffecb3;
+    font-family: var(--main-font);
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* -----------------------------------------
+     Хедер, футер — берутся из ваших base.css, header.css
+     Здесь главное, чтобы body не перекрывался.
+     ----------------------------------------- */
+  
+  
+  /* -----------------------------------------
+     Кнопки-плашки (в столбик)
+     ----------------------------------------- */
+  .tabs-container {
+    /* делаем их вертикально: */
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    margin: 20px;
+    /* Можно ограничить ширину, если хотите */
+    /* max-width: 200px; */
+  }
+  .tabs-container button {
+    width: 100%; /* фиксированная ширина, чтобы были "длинными" */
+    margin: 5px 0; /* вертикальный интервал между кнопками */
+    padding: 8px 12px;
+    font-size: 1rem;
+    background-color: #ffd187;
+    border: 1px solid #cf9b55;
     border-radius: 4px;
-    font-size: 16px;
-}
+    cursor: pointer;
+    font-family: var(--main-font);
+  }
+  .tabs-container button:hover {
+    background-color: #ffc077;
+  }
+  .tabs-container button.active-tab {
+    background-color: #e18f2d;
+    color: #fff;
+  }
+  
+  /* -----------------------------------------
+     Обёртка для таблицы
+     ----------------------------------------- */
+  .datatable-wrapper {
+    /* Ставим тот же фон, что и body, чтобы "сливалось" */
+    background-color: transparent; 
+    margin: 20px;
+    padding: 0;
+    border: none;
+    /* Горизонтальная прокрутка таблицы */
+    overflow-x: auto;
+  }
+  
+  /* -----------------------------------------
+     Стили самой таблицы (DataTables)
+     ----------------------------------------- */
+  table.dataTable {
+    font-size: 0.85rem;
+    width: 100%;
+    border-collapse: collapse; /* чтобы границы ячеек были тонкими */
+    font-family: var(--main-font);
+  }
+  
+  /* Ячейки */
+  table.dataTable th,
+  table.dataTable td {
+    padding: 6px 10px;
+    border: 1px solid #f2dfd0;
+  }
+  
+  /* Зебра */
+  table.dataTable tbody tr:nth-child(even) {
+    background-color: #fff7ec;
+  }
+  
+  /* Шапка */
+  table.dataTable thead th {
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #e1a560;
+  }
+  
+  /* -----------------------------------------
+     Разные цвета столбцов
+     (nth-child N должен соответствовать порядку столбцов)
+     ----------------------------------------- */
+  
+  /* 1) САНКЦ 0.03 (пусть будет желтым) */
+  table.dataTable thead th:nth-child(30),
+  table.dataTable tbody td:nth-child(30) {
+    background-color: #fff2b8; 
+  }
+  /* 2) АТК СУМ (зелёный) */
+  table.dataTable thead th:nth-child(31),
+  table.dataTable tbody td:nth-child(31) {
+    background-color: #daf5d5;
+  }
+  /* 3) АТК СУМ % (зелёный тоже) */
+  table.dataTable thead th:nth-child(32),
+  table.dataTable tbody td:nth-child(32) {
+    background-color: #daf5d5;
+  }
+  /* 4) ЗАЩ СУМ (розовый) */
+  table.dataTable thead th:nth-child(33),
+  table.dataTable tbody td:nth-child(33) {
+    background-color: #ffd0d0;
+  }
+  /* 5) ЗАЩ СУМ % (розовый тоже) */
+  table.dataTable thead th:nth-child(34),
+  table.dataTable tbody td:nth-child(34) {
+    background-color: #ffd0d0;
+  }
+  /* 6) Коэффициент (оранжевый) */
+  table.dataTable thead th:nth-child(35),
+  table.dataTable tbody td:nth-child(35) {
+    background-color: #ffe6cc;
+  }
+  /* 7) Бонус (синий) */
+  table.dataTable thead th:nth-child(36),
+  table.dataTable tbody td:nth-child(36) {
+    background-color: #d9eaf7;
+  }
+  
+  /* -----------------------------------------
+     Убираем лишние элементы DataTables
+     (пагинацию, инфо, length)
+     ----------------------------------------- */
+  .dataTables_length,
+  .dataTables_info,
+  .dataTables_paginate {
+    display: none !important;
+  }
+  
+  /* Оставляем поиск - пусть будет (но только по одному столбцу мы ограничим в JS).
+     Ставим его левее/выше. */
+  .dataTables_filter {
+    float: left !important;
+    margin-bottom: 10px;
+    font-family: var(--main-font);
+  }
+  .dataTables_filter label {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .dataTables_filter input[type="search"] {
+    padding: 4px 8px;
+    margin-left: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.85rem;
+    font-family: var(--main-font);
+  }
+  
