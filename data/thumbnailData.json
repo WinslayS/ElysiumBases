@@ -40,5 +40,14 @@
   "39": ["images/39a.webp", "images/39b.webp", "images/39c.webp"],
   "40": ["images/40a.webp", "images/40b.webp", "images/40c.webp"],
   "41": ["images/41a.webp", "images/41b.webp", "images/41c.webp"],
-  "42": ["images/42a.webp", "images/42b.webp", "images/42c.webp"]
+  "42": ["images/42a.webp", "images/42b.webp", "images/42c.webp"],
+  "43": ["images/43a.webp", "images/43b.webp", "images/43c.webp"],
+  "44": ["images/44a.webp", "images/44b.webp", "images/44c.webp"],
+  "45": ["images/45a.webp", "images/45b.webp", "images/45c.webp"],
+  "46": ["images/46a.webp", "images/46b.webp", "images/46c.webp"],
+  "47": ["images/47a.webp", "images/47b.webp", "images/47c.webp"],
+  "48": ["images/48a.webp", "images/48b.webp", "images/48c.webp"],
+  "49": ["images/49a.webp", "images/49b.webp", "images/49c.webp"],
+  "50": ["images/50a.webp", "images/50b.webp", "images/50c.webp"],
+  "51": ["images/51a.webp", "images/51b.webp", "images/51c.webp"]
 }

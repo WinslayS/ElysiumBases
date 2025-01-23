@@ -6,8 +6,12 @@ const sheetsList = [
     },
     {
       name: "Январь 25г",
-      url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFZD_jrEWb7rU6lkYT-IzdFDyn9i5gQK7h7uiC9IHm1e5e7yBUrSo5mybBNvsTbZAocG_5SAEqMncl/pub?output=tsv"
-    }
+      url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMUpXZgK-YI2q95yAXTtPTLNF0b99qZ4JkzzKm1Azq_Nw8pjXgFYJmLoryKkuRjWzuZddLPTbJkYg/pub?output=tsv"
+    },
+    {
+      name: "Февраль 25г",
+      url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSO0Q4Cz6RLM3_9SPt8zY9JNm_nbnI5WQDn36OlFKHQZwkrGalQVsIFBTB3aJdxr4cenDe5Laf1qsoL/pub?output=tsv"
+    },
   ];
   
   // Если вы хотите, чтобы самый новый был вверху, оставьте .reverse():
@@ -141,4 +145,4 @@ const sheetsList = [
     //   tabsContainer.querySelector('button').click();
     // }
   });
-  
+

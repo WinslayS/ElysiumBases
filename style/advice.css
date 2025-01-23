@@ -29,3 +29,50 @@
 .advice-section strong {
     color: #ff7043; /* Выделение важных элементов */
 }
+.sections-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff8f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.section-card {
+    width: 30%;
+    min-width: 280px;
+    background: linear-gradient(180deg, #ffede0, #ffcb91);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.section-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.section-card h2 {
+    color: #e43b04;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.section-card p {
+    font-size: 1.2em;
+    color: #333;
+}
+.section-card a {
+    text-decoration: none;
+    color: inherit; /* Наследует цвет текста */
+    display: block; /* Делает ссылку блочным элементом */
+    height: 100%; /* Охватывает всю секцию */
+}
