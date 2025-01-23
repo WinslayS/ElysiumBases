@@ -19,14 +19,14 @@
 .modal img {
     max-width: 100%; /* Ограничение ширины */
     max-height: 70vh; /* Ограничение высоты для больших экранов */
-    object-fit: contain; /* Сохранение пропорций */
+    object-fit: cover; /* Сохранение пропорций */
     border-radius: 10px; /* Закругленные углы */
     transition: transform 0.3s ease-in-out; /* Анимация масштабирования */
 }
 .modal-content {
     position: relative;
     width: 90%;
-    max-width: 1200px;
+    max-width: 1300px;
     height: auto; /* Автоматическая высота */
     visibility: visible;
     display: flex;
@@ -41,18 +41,9 @@
     border-radius: 12px;
     transition: transform 0.3s ease; /* Плавное изменение масштаба */
     will-change: transform; /* Оптимизация для производительности */
-}
-.preview-area {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* Скрываем изображение за границами */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px; /* Закругляем углы */
-    background: transparent; /* Убираем фон */
-    pointer-events: auto; /* Включаем интерактивность */
+    touch-action: none;     /* Отключаем системный скролл/зум внутри */
+    user-select: none;      /* Запрещаем выделение текста при перетаскивании */
+    cursor: grab; 
 }
 .controls-area {
     position: absolute; /* Фиксируем под рамкой */
@@ -64,6 +55,19 @@
     gap: 15px; /* Добавляем расстояние между элементами */
     width: 100%; /* Растягиваем на всю ширину */
     z-index: 1000; /* Поверх фона */
+}
+
+.preview-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Скрываем изображение за границами */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px; /* Закругляем углы */
+    background: transparent; /* Убираем фон */
+    pointer-events: auto; /* Включаем интерактивность */
 }
 .preview-area img {
     max-width: 100%;
