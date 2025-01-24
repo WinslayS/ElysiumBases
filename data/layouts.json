@@ -33,7 +33,6 @@
     "thumbnail": "images/s4a.webp",
     "fullImage": "images/4a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIwPMIaRuQgcrHIYjM70bKU",
-    "status": "new",
     "verification": "verified"
   },
   {
@@ -151,8 +150,7 @@
     "thumbnail": "images/s17a.webp",
     "fullImage": "images/17a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIvG1owS43WygeMHqMYwmFg",
-    "verification": "verified",
-    "status": "new"
+    "verification": "verified"
   },
   {
     "id": 18,
@@ -161,7 +159,6 @@
     "thumbnail": "images/s18a.webp",
     "fullImage": "images/18a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIuYdMd1tt8ajBt3vOGaV2T",
-    "status": "new",
     "verification": "verified"
   },
   {
@@ -171,8 +168,7 @@
     "thumbnail": "images/s19a.webp",
     "fullImage": "images/19a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIud1h59bO3PUzPAKb3yVgi",
-    "verification": "verified",
-    "status": "new"
+    "verification": "verified"
   },
   {
     "id": 20,
@@ -190,8 +186,7 @@
     "thumbnail": "images/s21a.webp",
     "fullImage": "images/21a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIuYdVhhfKbcwaGHFmNWQ4d",
-    "verification": "verified",
-    "status": "new"
+    "verification": "verified"
   },
   {
     "id": 22,
@@ -199,9 +194,7 @@
     "category": "война",
     "thumbnail": "images/s22a.webp",
     "fullImage": "images/22a.webp",
-    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIuXxST2NmEIwSZCQAMUkaw",
-    "status": "new",
-    "verification": "verified"
+    "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIuXxST2NmEIwSZCQAMUkaw"
   },
   {
     "id": 23,
@@ -228,8 +221,7 @@
     "thumbnail": "images/s25a.webp",
     "fullImage": "images/25a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOgAAAAIuZgPn11scuuqkKJop3uEB",
-    "verification": "verified",
-    "status": "new"
+    "verification": "verified"
   },
   {
     "id": 26,
@@ -472,6 +464,56 @@
     "thumbnail": "images/s51a.webp",
     "fullImage": "images/51a.webp",
     "link": "https://link.clashofclans.com/ru?action=OpenLayout&id=TH17%3AWB%3AAAAAOQAAAAIxwm3GvyaHypFbTe37MeyP",
+    "verification": "verified",
+    "status": "new"
+  },
+  {
+    "id": 52,
+    "name": "...",
+    "category": "война",
+    "thumbnail": "images/s52a.webp",
+    "fullImage": "images/52a.webp",
+    "link": "",
+    "verification": "verified",
+    "status": "new"
+  },
+  {
+    "id": 53,
+    "name": "...",
+    "category": "война",
+    "thumbnail": "images/s53a.webp",
+    "fullImage": "images/53a.webp",
+    "link": "",
+    "verification": "verified",
+    "status": "new"
+  },
+  {
+    "id": 54,
+    "name": "...",
+    "category": "война",
+    "thumbnail": "images/s54a.webp",
+    "fullImage": "images/54a.webp",
+    "link": "",
+    "verification": "verified",
+    "status": "new"
+  },
+  {
+    "id": 55,
+    "name": "...",
+    "category": "война",
+    "thumbnail": "images/s55a.webp",
+    "fullImage": "images/55a.webp",
+    "link": "",
+    "verification": "verified",
+    "status": "new"
+  },
+  {
+    "id": 56,
+    "name": "...",
+    "category": "война",
+    "thumbnail": "images/s56a.webp",
+    "fullImage": "images/56a.webp",
+    "link": "",
     "verification": "verified",
     "status": "new"
   }

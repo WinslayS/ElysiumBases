@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
+    // (!!! ВАЖНО) берем отдельный элемент для картинки:
+    const imageStage = modalContent.querySelector('.image-stage');
+    
     const thumbnailsContainer = document.getElementById('thumbnailsContainer');
     const zoomSlider = document.getElementById('zoomSlider');
     const resetZoom = document.getElementById('resetZoom');
@@ -9,19 +12,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==============================
     // Переменные состояния
     // ==============================
-    let scale = 1;           // Текущий масштаб
-    let offsetX = 0;         // Смещение картинки по X
-    let offsetY = 0;         // Смещение картинки по Y
+    let scale = 1;           
+    let offsetX = 0;         // смещение фоновой картинки
+    let offsetY = 0;         
+    
+    // "drag" картинки при scale>1
+    let isDragging = false;
+    let startX = 0, startY = 0; 
 
-    // Для pointer-событий
-    let isDragging = false;  // Идёт ли перетаскивание (drag) картинки
-    let startX = 0, startY = 0; // Начальные координаты pointer
-    let hasMoved = false;        // Было ли реальное движение картинки
-    let pointerDownTime = 0;     // Время последнего pointerdown для двойного нажатия
+    // Для свайпа (при scale=1)
+    let isPotentialSwipe = false;
+    let isHorizontalSwipe = false;
+    let isVerticalSwipe = false;
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    const SWIPE_THRESHOLD = 80; 
+    const SWIPE_CLOSE_THRESHOLD = 80; 
+    const SWIPE_DEADZONE = 10; 
 
-    // Для свайпов (лево/право)
-    let pointerDownX = 0;   // Координата X в момент pointerdown (нужно для свайпа)
-    let pointerDownY = 0;   // Координата Y в момент pointerdown
+    let clickCount = 0;
+    let doubleClickTimer = null;
+    const DOUBLE_CLICK_DELAY = 300;
+
+    // Pinch
+    let pointers = [];
+    let startPinchDist = 0; 
+    let startPinchScale = 1; 
+    let startPinchCenter = { x: 0, y: 0 };
 
     // Текущий индекс и список изображений
     let currentImageIndex = 0;
@@ -30,9 +47,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let thumbnailData = {};
 
     // ==============================
-    // Инициализация
+    // Загрузка JSON (пример)
     // ==============================
-
     try {
         const layoutsResponse = await fetch('data/layouts.json');
         layoutsData = await layoutsResponse.json();
@@ -45,102 +61,113 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ==============================
-    // Управление зумом: ползунок
+    // Ползунок зума
     // ==============================
     zoomSlider.addEventListener('input', (e) => {
         const newScale = parseFloat(e.target.value);
-        const rect = modalContent.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        // Сдвигаем offsets, чтобы «центр» оставался визуально на месте
-        offsetX -= (centerX / rect.width) * (newScale - scale) * rect.width;
-        offsetY -= (centerY / rect.height) * (newScale - scale) * rect.height;
-
-        scale = newScale;
-        updateBackground();
-        syncZoomSlider();
+        applyZoomCenterPreserving(newScale);
     });
 
-    // Кнопка сброса масштаба (переключаем 1x / 2x)
     resetZoom.addEventListener('click', () => {
-        scale = (scale === 1) ? 2 : 1;
-        if (scale === 1) {
+        let newScale = (scale === 1) ? 2 : 1;
+        if (newScale === 1) {
             offsetX = 0;
             offsetY = 0;
         }
-        updateBackground();
-        syncZoomSlider();
+        applyZoomCenterPreserving(newScale);
     });
 
-    // Синхронизация ползунка
-    const syncZoomSlider = () => {
-        zoomSlider.value = scale.toFixed(1);
+    // Задать scale так, чтобы центр зума не "прыгал"
+    function applyZoomCenterPreserving(newScale, centerX, centerY) {
+        const rect = imageStage.getBoundingClientRect(); 
+        // (!!! берём размеры imageStage, а не modalContent)
 
+        if (centerX === undefined || centerY === undefined) {
+            centerX = rect.width / 2;
+            centerY = rect.height / 2;
+        }
+
+        const deltaScale = newScale - scale;
+        offsetX -= (centerX / rect.width) * deltaScale * rect.width;
+        offsetY -= (centerY / rect.height) * deltaScale * rect.height;
+
+        scale = Math.max(1, Math.min(newScale, 3));
+        updateBackground();
+        syncZoomSlider();
+    }
+
+    function syncZoomSlider() {
+        zoomSlider.value = scale.toFixed(1);
         const fillPercent = ((scale - zoomSlider.min) / (zoomSlider.max - zoomSlider.min)) * 100;
         zoomSlider.style.setProperty('--slider-fill', `${fillPercent}%`);
-    };
+    }
 
     // ==============================
     // Функции отображения картинки
     // ==============================
-
-    const showImage = (index) => {
+    function showImage(index) {
         if (index < 0 || index >= imagesList.length) return;
         currentImageIndex = index;
+
+        // Сбрасываем масштаб
+        scale = 1;
+        offsetX = 0;
+        offsetY = 0;
+
+        // Старый фон убираем
+        imageStage.style.backgroundImage = 'none';
+        modalContent.classList.add('loading');
 
         const fullImage = imagesList[index];
         const image = new Image();
         image.src = fullImage;
 
-        // При новой картинке сбрасываем масштаб
-        scale = 1;
-        offsetX = 0;
-        offsetY = 0;
-
         image.onload = () => {
-            const previewArea = document.querySelector('.preview-area');
+            modalContent.classList.remove('loading');
+
+            // подгоняем высоту modalContent
             const aspectRatio = image.width / image.height;
             const containerWidth = modalContent.offsetWidth;
-
-            // Подгоняем высоту под соотношение сторон
             modalContent.style.height = `${containerWidth / aspectRatio}px`;
-            previewArea.style.height = 'auto';
+            const previewArea = modalContent.querySelector('.preview-area');
+            if (previewArea) previewArea.style.height = 'auto';
 
-            // Фоновая картинка в modalContent
-            modalContent.style.backgroundImage = `url(${fullImage})`;
-            modalContent.style.backgroundRepeat = 'no-repeat';
-            modalContent.style.backgroundPosition = 'center';
-            modalContent.style.backgroundSize = 'contain';
+            // (!!! ВАЖНО) ставим фон для imageStage, а не для modalContent
+            imageStage.style.backgroundImage = `url(${fullImage})`;
+            imageStage.style.backgroundPosition = 'center';
+            imageStage.style.backgroundSize = 'contain';
+            imageStage.style.backgroundRepeat = 'no-repeat';
 
             updateBackground();
             updateThumbnails();
             scrollToActiveThumbnail();
             syncZoomSlider();
         };
-    };
 
-    // Следующая/предыдущая картинка
-    const showNextImage = () => {
+        image.onerror = () => {
+            console.error("Не удалось загрузить:", fullImage);
+            modalContent.classList.remove('loading');
+        };
+    }
+
+    function showNextImage() {
         currentImageIndex = (currentImageIndex + 1) % imagesList.length;
         showImage(currentImageIndex);
-    };
-    const showPreviousImage = () => {
+    }
+    function showPreviousImage() {
         currentImageIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
         showImage(currentImageIndex);
-    };
+    }
 
-    // Обновить класс «active» на миниатюрах
-    const updateThumbnails = () => {
+    function updateThumbnails() {
         const thumbs = thumbnailsContainer.querySelectorAll('.thumbnail');
         thumbs.forEach((thumb, idx) => {
             if (idx === currentImageIndex) thumb.classList.add('active');
             else thumb.classList.remove('active');
         });
-    };
+    }
 
-    // Прокрутить к активной миниатюре
-    const scrollToActiveThumbnail = () => {
+    function scrollToActiveThumbnail() {
         const activeThumb = thumbnailsContainer.querySelector('.thumbnail.active');
         if (activeThumb) {
             activeThumb.scrollIntoView({
@@ -149,58 +176,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                 inline: 'center',
             });
         }
-    };
+    }
 
     // ==============================
     // Работа с фоном (зум, смещения)
     // ==============================
-
-    const constrainOffsets = () => {
-        // Ширина/высота с учётом миниатюр
-        const containerWidth = modalContent.offsetWidth;
-        const containerHeight = modalContent.offsetHeight - thumbnailsContainer.offsetHeight;
+    function constrainOffsets() {
+        const containerWidth = imageStage.offsetWidth; 
+        const containerHeight = imageStage.offsetHeight;
 
         const scaledWidth = containerWidth * scale;
         const scaledHeight = containerHeight * scale;
 
-        // Левая и правая границы
         const minOffsetX = Math.min(0, containerWidth - scaledWidth);
         const maxOffsetX = Math.max(0, containerWidth - scaledWidth);
-
-        // Верхняя и нижняя границы
-        const minOffsetY = Math.min(0, containerHeight - scaledHeight);
-        const maxOffsetY = Math.max(0, containerHeight - scaledHeight);
-
-        // Если картинка меньше контейнера по ширине/высоте - центрируем
         if (scaledWidth < containerWidth) offsetX = 0;
         else offsetX = Math.max(minOffsetX, Math.min(offsetX, maxOffsetX));
 
+        const minOffsetY = Math.min(0, containerHeight - scaledHeight);
+        const maxOffsetY = Math.max(0, containerHeight - scaledHeight);
         if (scaledHeight < containerHeight) offsetY = 0;
         else offsetY = Math.max(minOffsetY, Math.min(offsetY, maxOffsetY));
-    };
+    }
 
-    const updateBackground = () => {
+    function updateBackground() {
         constrainOffsets();
-        modalContent.style.backgroundSize = `${scale * 100}%`;
-        modalContent.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
-    };
+        // (!!! ВАЖНО) Применяем масштаб и позицию на imageStage
+        imageStage.style.backgroundSize = `${scale * 100}%`;
+        imageStage.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
+    }
 
     // ==============================
-    // Открытие модалки
+    // Открытие/закрытие модалки
     // ==============================
     const images = document.querySelectorAll('.zoomable');
     images.forEach((img) => {
         img.addEventListener('click', () => {
             const imageId = img.dataset.id;
             imagesList = thumbnailData[imageId] || [];
-            currentImageIndex = 0;
-
             if (imagesList.length > 0) {
                 showImage(0);
                 modal.classList.add('show');
                 document.body.classList.add('modal-open');
 
-                // Генерация миниатюр
                 thumbnailsContainer.innerHTML = '';
                 imagesList.forEach((src, idx) => {
                     const thumb = document.createElement('img');
@@ -211,29 +229,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                     thumbnailsContainer.appendChild(thumb);
                 });
             } else {
-                console.error('Изображения для ID не найдены:', imageId);
+                console.error('Нет изображений для ID:', imageId);
             }
         });
     });
 
-    // ==============================
-    // Закрытие модалки
-    // ==============================
-    closeModal.addEventListener('click', () => {
-        closeModalWindow();
-    });
+    closeModal.addEventListener('click', closeModalWindow);
 
-    const closeModalWindow = () => {
+    function closeModalWindow() {
         scale = 1;
         offsetX = 0;
         offsetY = 0;
+        imageStage.style.backgroundImage = 'none';
+        modalContent.classList.remove('loading');
+
+        // Сброс анимации
+        modalContent.style.transition = 'none';
+        modalContent.style.transform = 'translateY(0)';
+        modalContent.style.opacity = '1';
+
         updateBackground();
         syncZoomSlider();
         modal.classList.remove('show');
         document.body.classList.remove('modal-open');
-    };
+    }
 
-    // Клик по подложке
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModalWindow();
@@ -241,147 +261,307 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ==============================
-    // Масштабирование колёсиком (Desktop)
+    // Масштабирование колёсиком
     // ==============================
-    modalContent.addEventListener('wheel', (e) => {
+    imageStage.addEventListener('wheel', (e) => {
         e.preventDefault();
-        const rect = modalContent.getBoundingClientRect();
+        const rect = imageStage.getBoundingClientRect();
 
         const cursorX = e.clientX - rect.left;
         const cursorY = e.clientY - rect.top;
 
         const prevScale = scale;
         const delta = (e.deltaY > 0) ? -0.1 : 0.1;
-        scale = Math.min(Math.max(scale + delta, 1), 3);
+        let newScale = scale + delta;
+        newScale = Math.max(1, Math.min(newScale, 3));
 
-        // Смещение относительно курсора
-        const deltaScale = scale - prevScale;
+        if (Math.abs(newScale - prevScale) < 0.00001) {
+            return;
+        }
+
+        const deltaScale = newScale - prevScale;
         offsetX -= cursorX * deltaScale;
         offsetY -= cursorY * deltaScale;
 
+        scale = newScale;
         updateBackground();
         syncZoomSlider();
     }, { passive: false });
 
     // ==============================
-    // Собственный "двойной клик" (Desktop + Mobile)
+    // Pointer Events
     // ==============================
-    // Чтобы не зависеть от системного dblclick (который иногда задерживает),
-    // будем сами отслеживать 2 клика/тапа за короткий интервал.
-    // Мы делаем это в pointerdown (см. ниже).
+    imageStage.addEventListener('pointerdown', onPointerDown);
+    imageStage.addEventListener('pointermove', onPointerMove);
+    imageStage.addEventListener('pointerup', onPointerUp);
+    imageStage.addEventListener('pointercancel', onPointerCancel);
 
-    // ==============================
-    // Pointer Events (и мышь, и тач)
-    // ==============================
+    // Мы слушаем на imageStage для зума, но 
+    // для вертикального свайпа закрытия (движем modalContent) 
+    // всё равно обрабатываем те же события.
 
-    modalContent.addEventListener('pointerdown', (e) => {
-        // Проверяем, не кликнули ли по интерактивным элементам (кнопки, ползунок, миниатюры)
+    function onPointerDown(e) {
+        // Если клик по кнопкам и т.п., не начинаем свайп
         if (e.target.closest('.control-button, #closeModal, #zoomSliderContainer, .thumbnail')) {
-            // Не начинаем перетаскивание
+            return;
+        }
+        imageStage.setPointerCapture(e.pointerId);
+
+        pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
+        if (pointers.length === 2) {
+            startPinchDist = getPinchDistance(pointers[0], pointers[1]);
+            startPinchScale = scale;
+            startPinchCenter = getPinchCenter(pointers[0], pointers[1]);
+        }
+
+        // Логика doubleTap
+        clickCount++;
+        if (clickCount === 1) {
+            doubleClickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, DOUBLE_CLICK_DELAY);
+        } else if (clickCount === 2) {
+            clearTimeout(doubleClickTimer);
+            clickCount = 0;
+            handleDoublePress(e);
+        }
+
+        if (pointers.length === 1) {
+            startX = e.clientX;
+            startY = e.clientY;
+
+            if (scale > 1) {
+                isDragging = true;
+                isPotentialSwipe = false;
+            } else {
+                isDragging = false;
+                isPotentialSwipe = true;
+                isHorizontalSwipe = false;
+                isVerticalSwipe = false;
+                swipeStartX = e.clientX;
+                swipeStartY = e.clientY;
+                // Сброс transform, на случай если остался после предыдущей анимации
+                imageStage.style.transition = 'none';
+                imageStage.style.transform = 'translateX(0)';
+                modalContent.style.transition = 'none';
+                modalContent.style.transform = 'translateY(0)';
+                modalContent.style.opacity = '1';
+            }
+        }
+    }
+
+    function onPointerMove(e) {
+        // Обновить coords для pinch
+        for (let i = 0; i < pointers.length; i++) {
+            if (pointers[i].id === e.pointerId) {
+                pointers[i].x = e.clientX;
+                pointers[i].y = e.clientY;
+                break;
+            }
+        }
+
+        if (pointers.length === 2) {
+            const newDist = getPinchDistance(pointers[0], pointers[1]);
+            const pinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            let pinchRatio = newDist / startPinchDist;
+            let newScale = startPinchScale * pinchRatio;
+            applyZoomAroundPoint(newScale, pinchCenter.x, pinchCenter.y, startPinchCenter);
             return;
         }
 
-        // Сохраняем координаты нажатия (для свайпа)
-        pointerDownX = e.clientX;
-        pointerDownY = e.clientY;
-
-        // Проверяем на "двойное нажатие" (и мышь, и тач)
-        const now = Date.now();
-        if (now - pointerDownTime < 300) {
-            // Это второй клик/тап за короткий промежуток => двойное нажатие
-            handleDoublePress(e);
-        }
-        pointerDownTime = now;
-
-        // Начинаем потенциальное перетаскивание
-        isDragging = true;
-        hasMoved = false;  // пока что не двигались
-        startX = e.clientX;
-        startY = e.clientY;
-
-        modalContent.setPointerCapture(e.pointerId);
-        // Установим курсор grabbing (актуально для мыши)
-        modalContent.style.cursor = 'grabbing';
-    });
-
-    modalContent.addEventListener('pointermove', (e) => {
-        if (!isDragging) return;
-
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-            hasMoved = true;
-        }
-
-        offsetX += dx;
-        offsetY += dy;
-        startX = e.clientX;
-        startY = e.clientY;
-
-        updateBackground();
-    });
-
-    modalContent.addEventListener('pointerup', (e) => {
         if (isDragging) {
-            isDragging = false;
-            modalContent.releasePointerCapture(e.pointerId);
-            modalContent.style.cursor = 'grab';
+            // Перетаскивание фоновой картинки
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            offsetX += dx;
+            offsetY += dy;
+            startX = e.clientX;
+            startY = e.clientY;
+            updateBackground();
         }
+        else if (isPotentialSwipe) {
+            const dx = e.clientX - swipeStartX;
+            const dy = e.clientY - swipeStartY;
 
-        // Если пользователь «не двигал» картинку (hasMoved=false),
-        // то возможно это свайп (при scale===1) или просто клик
-        if (!hasMoved && scale === 1) {
-            const dx = e.clientX - pointerDownX;
-            const dy = e.clientY - pointerDownY;
-
-            // Проверка: свайп влево/вправо
-            if (Math.abs(dx) > 50 && Math.abs(dy) < 30) {
-                if (dx < 0) {
-                    // свайп влево => следующее изображение
-                    showNextImage();
-                } else {
-                    // свайп вправо => предыдущее
-                    showPreviousImage();
+            if (!isHorizontalSwipe && !isVerticalSwipe) {
+                if (Math.abs(dx) > SWIPE_DEADZONE || Math.abs(dy) > SWIPE_DEADZONE) {
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        isHorizontalSwipe = true;
+                    } else {
+                        isVerticalSwipe = true;
+                    }
                 }
             }
-        }
-    });
 
-    modalContent.addEventListener('pointercancel', (e) => {
-        // Аналог pointerup, если событие отменили
+            // Горизонтальный свайп => двигаем imageStage по X
+            if (isHorizontalSwipe) {
+                imageStage.style.transform = `translateX(${dx}px)`;
+            }
+            // Вертикальный свайп => двигаем modalContent (и можно уменьшать opacity)
+            else if (isVerticalSwipe) {
+                // Для наглядности параллельно меняем непрозрачность 
+                // (чем дальше тянем, тем сильнее исчезает)
+                const absDY = Math.abs(dy);
+                const maxDist = 300; 
+                let newOpacity = 1 - (absDY / maxDist);
+                if (newOpacity < 0) newOpacity = 0;
+                modalContent.style.transform = `translateY(${dy}px)`;
+                modalContent.style.opacity = newOpacity.toString();
+            }
+        }
+    }
+
+    function onPointerUp(e) {
+        imageStage.releasePointerCapture(e.pointerId);
+        pointers = pointers.filter(p => p.id !== e.pointerId);
+
+        if (pointers.length < 2) {
+            startPinchDist = 0;
+        }
+
         if (isDragging) {
             isDragging = false;
-            modalContent.releasePointerCapture(e.pointerId);
-            modalContent.style.cursor = 'grab';
         }
-    });
+        else if (isPotentialSwipe) {
+            const dx = e.clientX - swipeStartX;
+            const dy = e.clientY - swipeStartY;
+            if (isHorizontalSwipe) {
+                finishHorizontalSwipe(dx);
+            } else if (isVerticalSwipe) {
+                finishVerticalSwipe(dy);
+            }
 
-    // Функция обработки двойного клика/тапа (своя, а не системная)
-    function handleDoublePress(e) {
-        const rect = modalContent.getBoundingClientRect();
-        const cursorX = e.clientX - rect.left;
-        const cursorY = e.clientY - rect.top;
-
-        const prevScale = scale;
-        scale = (scale === 1) ? 2 : 1;
-
-        if (scale > prevScale) {
-            // Увеличиваем относительно точки нажатия
-            const deltaScale = scale - prevScale;
-            offsetX -= (cursorX / rect.width) * deltaScale * rect.width;
-            offsetY -= (cursorY / rect.height) * deltaScale * rect.height;
-        } else {
-            // Возвращаем в центр
-            offsetX = 0;
-            offsetY = 0;
+            isPotentialSwipe = false;
+            isHorizontalSwipe = false;
+            isVerticalSwipe = false;
         }
+    }
 
+    function onPointerCancel(e) {
+        imageStage.releasePointerCapture(e.pointerId);
+        pointers = pointers.filter(p => p.id !== e.pointerId);
+        isDragging = false;
+        isPotentialSwipe = false;
+        isHorizontalSwipe = false;
+        isVerticalSwipe = false;
+    }
+
+    // ==============================
+    // Завершаем свайпы
+    // ==============================
+    function finishHorizontalSwipe(dx) {
+        imageStage.style.transition = 'transform 0.3s ease';
+
+        if (dx < -SWIPE_THRESHOLD) {
+            // Уходим влево
+            imageStage.style.transform = 'translateX(-100%)';
+            imageStage.addEventListener('transitionend', function afterLeft() {
+                imageStage.removeEventListener('transitionend', afterLeft);
+                showNextImage();
+                // Ставим сразу справа
+                imageStage.style.transition = 'none';
+                imageStage.style.transform = 'translateX(100%)';
+                requestAnimationFrame(() => {
+                    // Потом за анимационный кадр возвращаем в центр
+                    imageStage.style.transition = 'transform 0.3s ease';
+                    imageStage.style.transform = 'translateX(0)';
+                });
+            });
+        }
+        else if (dx > SWIPE_THRESHOLD) {
+            // Уходим вправо
+            imageStage.style.transform = 'translateX(100%)';
+            imageStage.addEventListener('transitionend', function afterRight() {
+                imageStage.removeEventListener('transitionend', afterRight);
+                showPreviousImage();
+                imageStage.style.transition = 'none';
+                imageStage.style.transform = 'translateX(-100%)';
+                requestAnimationFrame(() => {
+                    imageStage.style.transition = 'transform 0.3s ease';
+                    imageStage.style.transform = 'translateX(0)';
+                });
+            });
+        }
+        else {
+            // Возвращаем назад
+            imageStage.style.transform = 'translateX(0)';
+        }
+    }
+
+    function finishVerticalSwipe(dy) {
+        modalContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+        // Свайп вниз
+        if (dy > SWIPE_CLOSE_THRESHOLD) {
+            modalContent.style.transform = 'translateY(100%)';
+            modalContent.style.opacity = '0'; 
+            modalContent.addEventListener('transitionend', function _closeDown() {
+                modalContent.removeEventListener('transitionend', _closeDown);
+                closeModalWindow();
+            });
+        }
+        // Свайп вверх
+        else if (dy < -SWIPE_CLOSE_THRESHOLD) {
+            modalContent.style.transform = 'translateY(-100%)';
+            modalContent.style.opacity = '0';
+            modalContent.addEventListener('transitionend', function _closeUp() {
+                modalContent.removeEventListener('transitionend', _closeUp);
+                closeModalWindow();
+            });
+        }
+        // Не дотянули
+        else {
+            // Возвращаемся назад
+            modalContent.style.transform = 'translateY(0)';
+            modalContent.style.opacity = '1';
+        }
+    }
+
+    // ==============================
+    // Pinch-утилиты
+    // ==============================
+    function getPinchDistance(p1, p2) {
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    function getPinchCenter(p1, p2) {
+        return {
+            x: (p1.x + p2.x) / 2,
+            y: (p1.y + p2.y) / 2
+        };
+    }
+
+    function applyZoomAroundPoint(newScale, pinchX, pinchY, pinchCenterStart) {
+        let deltaScale = newScale - scale;
+        const rect = imageStage.getBoundingClientRect();
+
+        let relX = (pinchX - rect.left) / rect.width;
+        let relY = (pinchY - rect.top) / rect.height;
+
+        offsetX -= relX * deltaScale * rect.width;
+        offsetY -= relY * deltaScale * rect.height;
+
+        scale = Math.max(1, Math.min(newScale, 3));
         updateBackground();
         syncZoomSlider();
     }
 
     // ==============================
-    // Переключение клавишами (Desktop)
+    // Двойной клик/тап
+    // ==============================
+    function handleDoublePress(e) {
+        const rect = imageStage.getBoundingClientRect();
+        const cursorX = e.clientX - rect.left;
+        const cursorY = e.clientY - rect.top;
+
+        let newScale = (scale === 1) ? 2 : 1;
+        applyZoomCenterPreserving(newScale, cursorX, cursorY);
+    }
+
+    // ==============================
+    // Клавиши
     // ==============================
     window.addEventListener('keydown', (e) => {
         if (modal.classList.contains('show')) {
