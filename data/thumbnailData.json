@@ -101,5 +101,20 @@
   "100": ["images/100a.webp", "images/100b.webp"],
   "101": ["images/101a.webp", "images/101b.webp"],
   "102": ["images/102a.webp", "images/102b.webp"],
-  "103": ["images/103a.webp", "images/103b.webp"]
+  "103": ["images/103a.webp", "images/103b.webp"],
+  "104": ["images/104a.webp", "images/104b.webp"],
+  "105": ["images/105a.webp", "images/105b.webp"],
+  "106": ["images/106a.webp", "images/106b.webp"],
+  "107": ["images/107a.webp", "images/107b.webp"],
+  "108": ["images/108a.webp", "images/108b.webp"],
+  "109": ["images/109a.webp", "images/109b.webp"],
+  "110": ["images/110a.webp", "images/110b.webp"],
+  "111": ["images/111a.webp", "images/111b.webp"],
+  "112": ["images/112a.webp", "images/112b.webp"],
+  "113": ["images/113a.webp", "images/113b.webp"],
+  "114": ["images/114a.webp", "images/114b.webp"],
+  "115": ["images/115a.webp", "images/115b.webp"],
+  "116": ["images/116a.webp", "images/116b.webp"],
+  "117": ["images/117a.webp", "images/117b.webp"]
+  
 }
