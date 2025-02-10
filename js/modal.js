@@ -322,17 +322,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             startOffsetX = offsetX;
             startOffsetY = offsetY;
         }
-
-        // Логика двойного тапa
-        clickCount++;
-        if (clickCount === 1) {
-            doubleClickTimer = setTimeout(() => { clickCount = 0; }, DOUBLE_CLICK_DELAY);
-        } else if (clickCount === 2) {
-            clearTimeout(doubleClickTimer);
+        
+        // Обрабатываем double tap ТОЛЬКО если задействован один указатель
+        if (pointers.length === 1) {
+            clickCount++;
+            if (clickCount === 1) {
+                doubleClickTimer = setTimeout(() => { clickCount = 0; }, DOUBLE_CLICK_DELAY);
+            } else if (clickCount === 2) {
+                clearTimeout(doubleClickTimer);
+                clickCount = 0;
+                handleDoublePress(e);
+            }
+        } else {
+            // Если уже два и более пальцев – сбрасываем счётчик двойного тапа
             clickCount = 0;
-            handleDoublePress(e);
         }
-
+        
+        // Если только один палец – начинаем отслеживать drag/swipe
         if (pointers.length === 1) {
             startX = e.clientX;
             startY = e.clientY;
@@ -354,7 +360,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 slidePrev.style.transform = 'translateX(-100%)';
             }
         }
-    }
+    }    
 
     function onPointerMove(e) {
         // Обновляем координаты указателей
