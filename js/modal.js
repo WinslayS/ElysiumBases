@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
-    // Работать будем с блоком image-stage и его слайдами:
+    // Работаем со слайдами внутри image-stage:
     const imageStage = modalContent.querySelector('.image-stage');
     const slideCurrent = imageStage.querySelector('.slide.current');
     const slideNext = imageStage.querySelector('.slide.next');
@@ -37,11 +37,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
 
-    // Pinch – остаётся, но мы его отключаем в onPointerMove
+    // Управление указателями (для pinch‑масштабирования)
     let pointers = [];
     let startPinchDist = 0;
     let startPinchScale = 1;
     let startPinchCenter = { x: 0, y: 0 };
+    // Новые переменные для сохранения начальных смещений
+    let startOffsetX = 0;
+    let startOffsetY = 0;
 
     // Текущий индекс и список изображений
     let currentImageIndex = 0;
@@ -80,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         applyZoomCenterPreserving(newScale);
     });
 
-    // При изменении зума вычисляем смещение так, чтобы точка (курсора или центра) оставалась на месте
+    // Масштабирование относительно точки (если координаты не заданы – используется центр)
     function applyZoomCenterPreserving(newScale, centerX, centerY) {
         const rect = slideCurrent.getBoundingClientRect();
         // Если координаты не заданы – берём центр контейнера
@@ -89,8 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             centerY = rect.height / 2;
         }
         const deltaScale = newScale - scale;
-        // Вычисляем смещение относительно центра: если курсор (или заданная точка) смещён от центра,
-        // то смещение offsetX, offsetY корректируется так, чтобы эта точка оставалась неподвижной.
+        // Корректируем смещения так, чтобы точка (centerX, centerY) оставалась неподвижной
         offsetX -= (centerX - rect.width / 2) * deltaScale;
         offsetY -= (centerY - rect.height / 2) * deltaScale;
 
@@ -275,7 +277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ==============================
-    // Масштабирование колёсиком
+    // Масштабирование колесиком
     // ==============================
     slideCurrent.addEventListener('wheel', (e) => {
         e.preventDefault();
@@ -297,7 +299,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, { passive: false });
 
     // ==============================
-    // Pointer Events
+    // Pointer Events (включая обработку pinch‑масштабирования)
     // ==============================
     imageStage.addEventListener('pointerdown', onPointerDown);
     imageStage.addEventListener('pointermove', onPointerMove);
@@ -309,22 +311,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         imageStage.setPointerCapture(e.pointerId);
-
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
+        
+        // Если появляется второй палец – запускаем pinch‑масштабирование:
         if (pointers.length === 2) {
-            // Здесь вычисление параметров pinch оставляем (если понадобится в будущем),
-            // но далее мы не будем их использовать – pinch отключён.
             startPinchDist = getPinchDistance(pointers[0], pointers[1]);
             startPinchScale = scale;
             startPinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            // Запоминаем текущие смещения, чтобы отсчитывать изменения от них:
+            startOffsetX = offsetX;
+            startOffsetY = offsetY;
         }
 
-        // Логика двойного тап (double tap)
+        // Логика двойного тапa
         clickCount++;
         if (clickCount === 1) {
-            doubleClickTimer = setTimeout(() => {
-                clickCount = 0;
-            }, DOUBLE_CLICK_DELAY);
+            doubleClickTimer = setTimeout(() => { clickCount = 0; }, DOUBLE_CLICK_DELAY);
         } else if (clickCount === 2) {
             clearTimeout(doubleClickTimer);
             clickCount = 0;
@@ -334,7 +336,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pointers.length === 1) {
             startX = e.clientX;
             startY = e.clientY;
-
             if (scale > 1) {
                 isDragging = true;
                 isPotentialSwipe = false;
@@ -364,12 +365,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 break;
             }
         }
-
-        // Отключаем pinch‑zoom: если задействовано более одного указателя, выходим.
-        if (pointers.length >= 2) {
+        
+        // Если задействовано два пальца – выполняем pinch‑масштабирование
+        if (pointers.length === 2) {
+            let newDist = getPinchDistance(pointers[0], pointers[1]);
+            let newPinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            let pinchRatio = newDist / startPinchDist;
+            let newScale = startPinchScale * pinchRatio;
+            newScale = Math.max(1, Math.min(newScale, 3));
+            const rect = slideCurrent.getBoundingClientRect();
+            // Корректируем смещения так, чтобы середина между пальцами оставалась неподвижной
+            offsetX = startOffsetX - (((newPinchCenter.x - rect.left) - rect.width / 2) * (newScale - startPinchScale));
+            offsetY = startOffsetY - (((newPinchCenter.y - rect.top) - rect.height / 2) * (newScale - startPinchScale));
+            scale = newScale;
+            updateBackground();
+            syncZoomSlider();
             return;
         }
-
+        
         if (isDragging) {
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
@@ -382,7 +395,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         else if (isPotentialSwipe) {
             const dx = e.clientX - swipeStartX;
             const dy = e.clientY - swipeStartY;
-
             if (!isHorizontalSwipe && !isVerticalSwipe) {
                 if (Math.abs(dx) > SWIPE_DEADZONE || Math.abs(dy) > SWIPE_DEADZONE) {
                     if (Math.abs(dx) > Math.abs(dy)) {
@@ -392,7 +404,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             }
-
             if (isHorizontalSwipe) {
                 if (dx < 0) {
                     slideCurrent.style.transform = `translateX(${dx}px)`;
@@ -419,7 +430,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pointers.length < 2) {
             startPinchDist = 0;
         }
-
         if (isDragging) {
             isDragging = false;
         }
@@ -522,7 +532,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ==============================
-    // Pinch‑утилиты (не используются, поскольку pinch‑zoom отключён)
+    // Pinch‑утилиты
     // ==============================
     function getPinchDistance(p1, p2) {
         const dx = p2.x - p1.x;
@@ -535,18 +545,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             x: (p1.x + p2.x) / 2,
             y: (p1.y + p2.y) / 2
         };
-    }
-
-    // Если в будущем понадобится разрешить pinch‑zoom, можно использовать эту функцию,
-    // но сейчас она не вызывается, так как в onPointerMove мы возвращаем, если задействовано ≥2 указателей.
-    function applyZoomAroundPoint(newScale, pinchX, pinchY) {
-        const rect = slideCurrent.getBoundingClientRect();
-        const deltaScale = newScale - scale;
-        offsetX -= ((pinchX - rect.left) - rect.width / 2) * deltaScale;
-        offsetY -= ((pinchY - rect.top) - rect.height / 2) * deltaScale;
-        scale = Math.max(1, Math.min(newScale, 3));
-        updateBackground();
-        syncZoomSlider();
     }
 
     // ==============================
