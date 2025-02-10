@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>ЛВК</title>
-  <link rel="icon" href="images/head.webp" type="image/webp" />
+  <link rel="icon" href="images/banner/head.webp" type="image/webp" />
 
   <!-- Ваши базовые стили -->
   <link rel="stylesheet" href="style/base.css" />
@@ -34,6 +34,16 @@
       </ul>
     </nav>
   </header>
+  <div class="description-section">
+    <p>По поводу коэффициента:</p>
+    <ul>
+        <li><strong>Атака + атака%:</strong> суммируются.</li>
+        <li><strong>Защита + защита%:</strong> суммируются, но каждый % умножается на <strong>0.5</strong>, чтобы звёзды имели приоритет.</li>
+        <li>Вся защита дополнительно умножается на <strong>0.5</strong>, чтобы дать приоритет атакам.</li>
+        <li>В конце от атаки отнимается защита (идеальный коэффициент — <strong>1.0000000</strong>).</li>
+        <li>При атаках на <strong>17ТХ</strong> базу прокачки <strong>16ТХ</strong> и ниже даётся <strong>0.04 очка</strong>, что немного сдвигает вас в топе.</li>
+    </ul>
+</div>
 
   <!-- Блок с кнопками (плашками) в столбик -->
   <div class="tabs-container" id="tabsContainer">
