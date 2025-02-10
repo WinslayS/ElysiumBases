@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
 
-    // Pinch
+    // Pinch – остаётся, но мы его отключаем в onPointerMove
     let pointers = [];
     let startPinchDist = 0;
     let startPinchScale = 1;
@@ -83,15 +83,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // При изменении зума вычисляем смещение так, чтобы точка (курсора или центра) оставалась на месте
     function applyZoomCenterPreserving(newScale, centerX, centerY) {
         const rect = slideCurrent.getBoundingClientRect();
-        // Если координаты не заданы, берём центр контейнера
+        // Если координаты не заданы – берём центр контейнера
         if (centerX === undefined || centerY === undefined) {
             centerX = rect.width / 2;
             centerY = rect.height / 2;
         }
         const deltaScale = newScale - scale;
-        // ВЫЧИСЛЯЕМ смещение относительно центра контейнера:
-        // Если курсор левее центра, (centerX - rect.width/2) отрицателен, и при увеличении zoom
-        // смещение скорректируется так, чтобы именно эта точка оставалась неподвижной.
+        // Вычисляем смещение относительно центра: если курсор (или заданная точка) смещён от центра,
+        // то смещение offsetX, offsetY корректируется так, чтобы эта точка оставалась неподвижной.
         offsetX -= (centerX - rect.width / 2) * deltaScale;
         offsetY -= (centerY - rect.height / 2) * deltaScale;
 
@@ -293,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Здесь используем координаты курсора, чтобы масштабировать относительно него
+        // Используем координаты курсора для масштабирования относительно него
         applyZoomCenterPreserving(newScale, cursorX, cursorY);
     }, { passive: false });
 
@@ -313,12 +312,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
         if (pointers.length === 2) {
+            // Здесь вычисление параметров pinch оставляем (если понадобится в будущем),
+            // но далее мы не будем их использовать – pinch отключён.
             startPinchDist = getPinchDistance(pointers[0], pointers[1]);
             startPinchScale = scale;
             startPinchCenter = getPinchCenter(pointers[0], pointers[1]);
         }
 
-        // Логика doubleTap
+        // Логика двойного тап (double tap)
         clickCount++;
         if (clickCount === 1) {
             doubleClickTimer = setTimeout(() => {
@@ -355,6 +356,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function onPointerMove(e) {
+        // Обновляем координаты указателей
         for (let i = 0; i < pointers.length; i++) {
             if (pointers[i].id === e.pointerId) {
                 pointers[i].x = e.clientX;
@@ -363,12 +365,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        if (pointers.length === 2) {
-            const newDist = getPinchDistance(pointers[0], pointers[1]);
-            const pinchCenter = getPinchCenter(pointers[0], pointers[1]);
-            let pinchRatio = newDist / startPinchDist;
-            let newScale = startPinchScale * pinchRatio;
-            applyZoomAroundPoint(newScale, pinchCenter.x, pinchCenter.y);
+        // Отключаем pinch‑zoom: если задействовано более одного указателя, выходим.
+        if (pointers.length >= 2) {
             return;
         }
 
@@ -524,7 +522,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ==============================
-    // Pinch‑утилиты
+    // Pinch‑утилиты (не используются, поскольку pinch‑zoom отключён)
     // ==============================
     function getPinchDistance(p1, p2) {
         const dx = p2.x - p1.x;
@@ -539,7 +537,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // При pinch теперь вычисляем смещение относительно центра контейнера:
+    // Если в будущем понадобится разрешить pinch‑zoom, можно использовать эту функцию,
+    // но сейчас она не вызывается, так как в onPointerMove мы возвращаем, если задействовано ≥2 указателей.
     function applyZoomAroundPoint(newScale, pinchX, pinchY) {
         const rect = slideCurrent.getBoundingClientRect();
         const deltaScale = newScale - scale;
