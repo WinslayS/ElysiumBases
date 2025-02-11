@@ -1,41 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="images/banner/head.webp" type="image/webp">
-    <title>Главное меню</title>
-    <link rel="stylesheet" href="style/base.css">
-    <link rel="stylesheet" href="style/header.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="images/banner/head.webp" type="image/webp">
+  <title>Главное меню</title>
+  <link rel="stylesheet" href="style/base.css">
+  <link rel="stylesheet" href="style/header.css">
 </head>
 <body>
-    <header class="header-top">
-            <h1><a href="index.html" style="text-decoration: none; color: inherit;">Элизиум</a></h1>
-    </header>
-    <section class="main-menu">
-        <div class="menu-card" onclick="location.href='layouts.html'">
-            <img src="images/banner/layouts.webp" alt="Расстановки">
-            <h2>Расстановки</h2>
-        </div>
-        <div class="menu-card" onclick="location.href='mix.html'">
-            <img src="images/banner/mix.webp" alt="Миксы">
-            <h2>Миксы</h2>
-        </div>
-        <div class="menu-card" onclick="location.href='advice.html'">
-            <img src="images/banner/advice.webp" alt="Советы">
-            <h2>Советы</h2>
-        </div>
-        <div class="menu-card" onclick="location.href='table.html'">
-            <img src="images/banner/table.webp" alt="ЛВК">
-            <h2>ЛВК</h2>
-        </div>
+  <header class="header-top">
+    <div class="header-row">
+      <div class="logo">
+        <a href="index.html">
+          <img src="images/banner/head.webp" alt="Логотип">
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li class="dropdown">
+            <a href="bases.html">Планировки</a>
+          </li>
+          <li class="dropdown">
+            <a href="mix.html">Миксы</a>
+          </li>
+          <li class="dropdown">
+            <a href="advice.html">Советы</a>
+          </li>
+          <li>
+            <a href="table.html">ЛВК</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="menu-icons">
+        <button class="icon-button" id="color-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C6.48 2 2 6.48 2 12c0 4.33 2.5 8 6.5 9.5a1 1 0 0 0 1.17-.17A8.003 8.003 0 0 0 20 12c0-5.52-4.48-10-10-10z" fill="currentColor"/>
+            <circle cx="8.5" cy="11.5" r="1.5" fill="#fff"/>
+            <circle cx="12" cy="8" r="1.5" fill="#fff"/>
+            <circle cx="15.5" cy="11.5" r="1.5" fill="#fff"/>
+          </svg>
+        </button>
+        <button class="icon-button" id="language-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm5 10h-3.09a15.92 15.92 0 0 1 0 4H17a8.003 8.003 0 0 0 0-4zm-5 5a15.92 15.92 0 0 1-2 0 8.003 8.003 0 0 0 2 0zm-2-5H7a8.003 8.003 0 0 0 0 4h3.09a15.92 15.92 0 0 1 0-4zm-2-3a15.92 15.92 0 0 1 2-4 8.003 8.003 0 0 0-2 4zm2-5a15.92 15.92 0 0 1 2 0 8.003 8.003 0 0 0-2 0zM7 12a8.003 8.003 0 0 0 0 4h3.09a15.92 15.92 0 0 1 0-4H7z" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="icon-button" id="profile-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="dropdown-menu"></div>
+  </header>
+  <main>
+    <section class="content-menu">
+      <a class="menu-card" href="bases.html">
+        <img src="images/banner/bases.webp" alt="Планировки">
+        <h2>Планировки</h2>
+      </a>
+      <a class="menu-card" href="mix.html">
+        <img src="images/banner/mix.webp" alt="Миксы">
+        <h2>Миксы</h2>
+      </a>
+      <a class="menu-card" href="advice.html">
+        <img src="images/banner/advice.webp" alt="Советы">
+        <h2>Советы</h2>
+      </a>
+      <a class="menu-card" href="table.html">
+        <img src="images/banner/table.webp" alt="ЛВК">
+        <h2>ЛВК</h2>
+      </a>
     </section>
-    <footer class="footer-bottom">
-        <div class="footer-content">
-            <p>Создатель: <strong>Kvane</strong></p>
-            <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
-            <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
-        </div>
-    </footer>
+  </main>
+  <footer class="footer-bottom">
+    <div class="footer-content">
+      <p>Создатель: <strong>Kvane</strong></p>
+      <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
+      <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
+    </div>
+  </footer>
+  <script src="js/header.js"></script>
 </body>
 </html>

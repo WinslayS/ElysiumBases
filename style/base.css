@@ -1,4 +1,13 @@
-@font-face {
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+  @font-face {
     font-family: 'MyCustomFont';
     src: url('font.ttf') format('truetype');
     font-weight: normal;
@@ -19,7 +28,7 @@ body {
 	margin: 0;
 	padding: 0;
 	height: 100vh;
-    background: linear-gradient(180deg, #ffecb3, #fff9e6);
+    background: var(--white);
     background-attachment: fixed; /* Чтобы фон не прокручивался */
     margin-top: 0;
 }

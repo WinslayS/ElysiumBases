@@ -12,9 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const resetZoom = document.getElementById('resetZoom');
     const closeModal = document.getElementById('closeModal');
 
-    // ==============================
     // Переменные состояния
-    // ==============================
     let scale = 1;
     let offsetX = 0;  // смещение по X (относительно центра)
     let offsetY = 0;  // смещение по Y
@@ -52,9 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let layoutsData = [];
     let thumbnailData = {};
 
-    // ==============================
     // Загрузка JSON (пример)
-    // ==============================
     try {
         const layoutsResponse = await fetch('data/layouts.json');
         layoutsData = await layoutsResponse.json();
@@ -66,9 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // ==============================
     // Ползунок зума
-    // ==============================
     zoomSlider.addEventListener('input', (e) => {
         const newScale = parseFloat(e.target.value);
         applyZoomCenterPreserving(newScale);
@@ -107,9 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         zoomSlider.style.setProperty('--slider-fill', `${fillPercent}%`);
     }
 
-    // ==============================
     // Функции обновления слайдов
-    // ==============================
     // Обновляет фон текущего слайда с учетом зума и смещения
     function updateBackground() {
         constrainOffsets();
@@ -156,9 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         offsetY = 0;
     }
 
-    // ==============================
     // Отображение изображения
-    // ==============================
     function showImage(index) {
         if (index < 0 || index >= imagesList.length) return;
         currentImageIndex = index;
@@ -179,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const containerWidth = modalContent.offsetWidth;
             modalContent.style.height = `${containerWidth / aspectRatio}px`;
             const previewArea = modalContent.querySelector('.preview-area');
-            if (previewArea) previewArea.style.height = 'auto';
+            //if (previewArea) previewArea.style.height = 'auto';
 
             // Устанавливаем фон для текущего слайда и обновляем соседние
             slideCurrent.style.backgroundImage = `url(${fullImage})`;
@@ -224,9 +214,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // ==============================
     // Открытие/закрытие модалки
-    // ==============================
     const images = document.querySelectorAll('.zoomable');
     images.forEach((img) => {
         img.addEventListener('click', () => {
@@ -276,9 +264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // ==============================
     // Масштабирование колесиком
-    // ==============================
     slideCurrent.addEventListener('wheel', (e) => {
         e.preventDefault();
         const rect = slideCurrent.getBoundingClientRect();
@@ -298,9 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         applyZoomCenterPreserving(newScale, cursorX, cursorY);
     }, { passive: false });
 
-    // ==============================
     // Pointer Events (включая обработку pinch‑масштабирования)
-    // ==============================
     imageStage.addEventListener('pointerdown', onPointerDown);
     imageStage.addEventListener('pointermove', onPointerMove);
     imageStage.addEventListener('pointerup', onPointerUp);
@@ -462,9 +446,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         isVerticalSwipe = false;
     }
 
-    // ==============================
     // Завершаем свайпы
-    // ==============================
     function finishHorizontalSwipe(dx) {
         const duration = 300;
         if (dx < -SWIPE_THRESHOLD) {
@@ -537,9 +519,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // ==============================
     // Pinch‑утилиты
-    // ==============================
     function getPinchDistance(p1, p2) {
         const dx = p2.x - p1.x;
         const dy = p2.y - p1.y;
@@ -553,9 +533,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // ==============================
     // Двойной клик/тап
-    // ==============================
     function handleDoublePress(e) {
         const rect = slideCurrent.getBoundingClientRect();
         const cursorX = e.clientX - rect.left;
@@ -564,9 +542,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         applyZoomCenterPreserving(newScale, cursorX, cursorY);
     }
 
-    // ==============================
     // Клавиши управления
-    // ==============================
     window.addEventListener('keydown', (e) => {
         if (modal.classList.contains('show')) {
             if (e.key === 'ArrowRight') {

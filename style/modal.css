@@ -59,7 +59,7 @@
 .preview-area {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
     overflow: hidden; /* Скрываем изображение за границами */
     display: flex;
     justify-content: center;
@@ -76,22 +76,6 @@
     z-index: 1; /* Убедитесь, что изображение перекрывает только нужные области */
     transition: transform 0.3s ease; /* Плавная анимация изменения масштаба */
     transform-origin: center; /* Масштабирование относительно центра */
-}
-/* Адаптация для небольших экранов */
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%; /* Увеличиваем ширину для мобильных устройств */
-        max-width: none; /* Убираем ограничение на ширину */
-        border-radius: 10px; /* Меньший радиус закругления */
-    }
-}
-/* Адаптация для очень маленьких экранов */
-@media (max-width: 480px) {
-    .modal-content {
-        width: 100%; /* Заполняем всю ширину экрана */
-        margin: 10px; /* Уменьшаем отступы */
-        border-radius: 8px; /* Ещё меньший радиус закругления */
-    }
 }
 .modal img:active {
     cursor: grabbing;
@@ -233,6 +217,7 @@ body.modal-open::before {
     background-position: center;
     background-size: contain;
     overflow: hidden;
+    border-radius: 12px;
     /* никакого overflow, пусть slides могут выезжать за границы */
   }
   .slide {
@@ -241,7 +226,7 @@ body.modal-open::before {
     top: 0; left: 0;
     width: 100%;
     height: 100%;
-    background-size: contain;
+    background-size: contain; 
     background-position: center;
     background-repeat: no-repeat;
     transition: transform 0.3s ease; /* для плавного анимирования */
@@ -268,3 +253,7 @@ body.modal-open::before {
     transform: translateX(-100%);
     z-index: 1;
   }
+
+
+
+  
